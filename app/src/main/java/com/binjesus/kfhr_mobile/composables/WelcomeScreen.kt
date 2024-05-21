@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -58,14 +59,14 @@ fun LoginScreen(navController: NavHostController) {
                 .padding(bottom = 16.dp),
             contentScale = ContentScale.FillBounds
         )
-        Spacer(modifier = Modifier.height(48.dp)) // Adjust the height to move the content down
-
+        Spacer(modifier = Modifier.height(48.dp))
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(Color(0xFF078544), RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+                .shadow(16.dp, RoundedCornerShape(topStart = 18.dp, topEnd = 14.dp))
+                .background(Color(0xFF078544), RoundedCornerShape(topStart = 14.dp, topEnd = 10.dp))
                 .padding(16.dp)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -76,21 +77,29 @@ fun LoginScreen(navController: NavHostController) {
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
-                    modifier = Modifier.padding(bottom = 8.dp).align(Alignment.Start),
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .align(Alignment.Start),
                 )
                 Spacer(modifier = Modifier.height(22.dp))
 
                 Text(
-                    text = "please sign in with your Employee ID and Password!",
+                    text = "Please sign in with your Employee ID and Password!",
                     fontSize = 18.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth()
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(18.dp))
+
                 Button(
-                    onClick = { /* TODO: Add sign-in logic */ },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp).height(56.dp),
+                    onClick = { navController.navigate("SignIn") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 40.dp)
+                        .height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     shape = RoundedCornerShape(14.dp)
                 ) {
@@ -98,19 +107,19 @@ fun LoginScreen(navController: NavHostController) {
                         text = "Sign In",
                         color = Color(0xFF4CAF50),
                         fontSize = 20.sp
-
                     )
-
                 }
+
                 Spacer(modifier = Modifier.height(20.dp))
+
                 Text(
-                    text = "dont have an account? Contact IT",
+                    text = "Don't have an account? Contact IT",
                     fontSize = 18.sp,
                     color = Color.White,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(top = 8.dp)
-                        .clickable { navController.navigate("ContactIT")}
+                        .clickable { navController.navigate("ContactIT") }
                 )
             }
         }

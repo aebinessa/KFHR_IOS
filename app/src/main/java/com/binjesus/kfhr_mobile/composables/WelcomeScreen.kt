@@ -72,7 +72,7 @@ fun LoginScreen() {
 
                 Text(
                     text = "Welcome!",
-                    fontSize = 24.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier.padding(bottom = 8.dp).align(Alignment.Start),

@@ -26,5 +26,9 @@ fun ScreensNavHost(
              ITContactScreen(navController)
 
         }
+        composable("SignIn") {
+            SignInScreen(navController)
+
+        }
     }
 }

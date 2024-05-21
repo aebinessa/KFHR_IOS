@@ -27,10 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.binjesus.kfhr_mobile.R
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -109,7 +110,7 @@ fun LoginScreen() {
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(top = 8.dp)
-                        .clickable { /* No functionality */ }
+                        .clickable { navController.navigate("ContactIT")}
                 )
             }
         }

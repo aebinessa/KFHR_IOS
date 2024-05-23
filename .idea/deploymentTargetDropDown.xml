@@ -2,9 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="Ellipse60">
-        <State />
-      </entry>
       <entry key="Ellipse60 (1)">
         <State />
       </entry>
@@ -15,6 +12,9 @@
         <State />
       </entry>
       <entry key="PreviewHomeScreen">
+        <State />
+      </entry>
+      <entry key="UserProfileScreenPreview">
         <State />
       </entry>
       <entry key="app">

@@ -45,9 +45,9 @@ data class ITEmployee(
 @Composable
 fun ITContactScreen(navController: NavHostController) {
     val employees = listOf(
-        ITEmployee("Mohammad Alshadad", "+96599990001", "mohammedalshadad@kfh.com"),
-        ITEmployee("Khaled Alshatti", "+96590002345", "khaledalshatti@kfh.com"),
-        ITEmployee("Omar Almutairi", "+96568765421", "omralmutairi@kfh.com")
+        ITEmployee("jacqueline salford", "+9665435678", "jacquelinesalford@abcd.com"),
+        ITEmployee("Elon Tusk", "+9655643567", "ElonTusk@abcd.com"),
+        ITEmployee("Abigail", "+9656345768765", "Abigail@abcd.com")
     )
 
     Scaffold(

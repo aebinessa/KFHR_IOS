@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="CertificatesScreenPreview">
+        <State />
+      </entry>
       <entry key="NotificationScreenPreview">
         <State />
       </entry>
@@ -11,10 +14,7 @@
       <entry key="PreviewEmployeeDirectoryScreen">
         <State />
       </entry>
-      <entry key="PreviewHomeScreen">
-        <State />
-      </entry>
-      <entry key="UserProfileScreenPreview">
+      <entry key="PreviewRecommendedCertificatesScreen">
         <State />
       </entry>
       <entry key="app">

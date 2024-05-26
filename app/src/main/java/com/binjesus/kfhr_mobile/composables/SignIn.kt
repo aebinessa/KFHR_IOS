@@ -38,12 +38,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Employee
+import com.binjesus.kfhr_mobile.network.KFHRApiService
+import com.binjesus.kfhr_mobile.network.LoginRequest
+import com.binjesus.kfhr_mobile.network.RetrofitHelper
 import kotlinx.coroutines.launch
-import java.util.Date
+import retrofit2.HttpException
+import java.io.IOException
 
 @Composable
 fun SignInScreen(navController: NavController) {
-    var employeeId by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberMe by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
@@ -79,10 +83,10 @@ fun SignInScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
-            value = employeeId,
-            onValueChange = { employeeId = it },
+            value = email,
+            onValueChange = { email = it },
             shape = RoundedCornerShape(14.dp),
-            label = { Text(text = "Employee ID") },
+            label = { Text(text = "Email") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
@@ -123,13 +127,16 @@ fun SignInScreen(navController: NavController) {
                     coroutineScope.launch {
                         isLoading = true
                         errorMessage = ""
-                        // Call backend API for sign-in
-                        val result = signIn(employeeId, password)
-                        if (result != null) {
-                            // Navigate to another screen or handle successful sign-in
-                            // For example: navController.navigate("HomeScreen")
-                        } else {
-                            errorMessage = "Invalid Employee ID or Password"
+                        try {
+                            val result = signIn(email, password)
+                            if (result != null) {
+                                // Navigate to another screen or handle successful sign-in
+                                navController.navigate("HomeScreen")
+                            } else {
+                                errorMessage = "Invalid Email or Password"
+                            }
+                        } catch (e: Exception) {
+                            errorMessage = e.message ?: "Unknown error occurred"
                         }
                         isLoading = false
                     }
@@ -171,13 +178,14 @@ fun SignInScreen(navController: NavController) {
     }
 }
 
-// API Call goes down here
-suspend fun signIn(employeeId: String, password: String): Employee? {
-    // Simulate a network call
-    // Replace with actual sign-in logic
-    return if (employeeId == "test" && password == "password") {
-        Employee(1, password, "Test User", "Role", "email@example.com", "1234567890", Date(), "Male", "profilePicURL", 1, 1, 1, 0)
-    } else {
+suspend fun signIn(email: String, password: String): Employee? {
+    val apiService = RetrofitHelper.getInstance().create(KFHRApiService::class.java)
+    return try {
+        val response = apiService.login(LoginRequest(email, password))
+        response.employee
+    } catch (e: HttpException) {
+        null
+    } catch (e: IOException) {
         null
     }
 }

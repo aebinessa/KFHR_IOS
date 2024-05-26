@@ -2,13 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="Ellipse60 (1)">
-        <State />
-      </entry>
       <entry key="NFCNav">
         <State />
       </entry>
       <entry key="NFCNavPreview">
+        <State />
+      </entry>
+      <entry key="NotificationScreenPreview">
         <State />
       </entry>
       <entry key="PreviewHomeScreen">

@@ -163,7 +163,6 @@ fun UserProfileScreen(navController: NavHostController, employee: Employee) {
 fun UserProfileScreenPreview() {
     val employee = Employee(
         id = 8332246,
-        password = "password",
         name = "Abdullah Essa Bin Essa",
         role = "Group Human Resources",
         email = "abdullah@example.com",
@@ -171,7 +170,7 @@ fun UserProfileScreenPreview() {
         dob = Date(),
         gender = "Male",
         profilePicURL = "https://example.com/profile.jpg",
-        nfcId = 123,
+        nfcIdNumber = 123,
         positionId = 1,
         departmentId = 1,
         pointsEarned = 100

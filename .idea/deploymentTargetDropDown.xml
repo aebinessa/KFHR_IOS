@@ -2,13 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="NFCNav">
-        <State />
-      </entry>
-      <entry key="NFCNavPreview">
-        <State />
-      </entry>
       <entry key="NotificationScreenPreview">
+        <State />
+      </entry>
+      <entry key="PreviewEmployeeDetailScreen">
+        <State />
+      </entry>
+      <entry key="PreviewEmployeeDirectoryScreen">
         <State />
       </entry>
       <entry key="PreviewHomeScreen">

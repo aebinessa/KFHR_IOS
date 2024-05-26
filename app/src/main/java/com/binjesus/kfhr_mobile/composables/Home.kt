@@ -259,7 +259,6 @@ fun PreviewHomeScreen() {
     val navController = rememberNavController()
     val employee = Employee(
         id = 1,
-        password = "password",
         name = "Abdullah Bin Essa",
         role = "Forssah Tech Trainee",
         email = "abdullah@example.com",
@@ -267,7 +266,7 @@ fun PreviewHomeScreen() {
         dob = Date(),
         gender = "Male",
         profilePicURL = "https://example.com/profile.jpg",
-        nfcId = 123,
+        nfcIdNumber = 123,
         positionId = 1,
         departmentId = 1,
         pointsEarned = 100

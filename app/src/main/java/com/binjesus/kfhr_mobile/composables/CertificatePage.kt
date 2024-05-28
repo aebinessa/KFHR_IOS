@@ -90,7 +90,7 @@ fun Header(navController: NavHostController) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { /* Recommended action */ },
+            onClick = { navController.popBackStack() },
             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {

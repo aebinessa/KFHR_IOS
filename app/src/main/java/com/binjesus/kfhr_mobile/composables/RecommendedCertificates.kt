@@ -21,12 +21,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
 
 @Composable
-fun RecommendedCertificatesScreen(certificates: List<RecommendedCertificate>, onCertificateClick: (RecommendedCertificate) -> Unit, onViewAllClick: () -> Unit) {
+fun RecommendedCertificatesScreen(navController: NavHostController, certificates: List<RecommendedCertificate>, onCertificateClick: (RecommendedCertificate) -> Unit, onViewAllClick: () -> Unit) {
     Scaffold(
         topBar = {
             Row(
@@ -42,17 +44,16 @@ fun RecommendedCertificatesScreen(certificates: List<RecommendedCertificate>, on
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { /* Handle notifications click */ }) {
+                IconButton(onClick = { navController.navigate("Notifications") }) {
                     Icon(
                         painter = painterResource(id = R.drawable.bell),
                         contentDescription = "Notifications",
                         tint = Color.Black,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
         },
-        bottomBar = { BottomNavigationBar() }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
@@ -68,11 +69,14 @@ fun RecommendedCertificatesScreen(certificates: List<RecommendedCertificate>, on
                 }
             }
             FloatingActionButton(
-                onClick = onViewAllClick,
+                onClick = { navController.navigate("Notifications") },
                 backgroundColor = Color(0xFF4CAF50),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = 64.dp, end = 16.dp) // Adjust the padding to position the button above the bottom bar
+                    .padding(
+                        bottom = 64.dp,
+                        end = 16.dp
+                    ) // Adjust the padding to position the button above the bottom bar
                     .size(75.dp)
                     .shadow(elevation = 20.dp, shape = CircleShape)
             ) {
@@ -146,7 +150,9 @@ fun PreviewRecommendedCertificatesScreen() {
         RecommendedCertificate(3, "AWS Certified Solutions Architect", "Amazon", 150, "https://www.aws.training", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5JJdkCaqPHmjegj3ggaiHufw4SH5wYZoT3kDcDNDAdw&s"),
         RecommendedCertificate(4, "Google Cloud Professional Data Engineer", "Google", 150, "https://cloud.google.com/certification", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5JJdkCaqPHmjegj3ggaiHufw4SH5wYZoT3kDcDNDAdw&s")
     )
-    RecommendedCertificatesScreen(certificates, onCertificateClick = { certificate ->
+    val navController = rememberNavController()
+
+    RecommendedCertificatesScreen(navController, certificates, onCertificateClick = { certificate ->
         // Handle certificate click (navigate to detail screen)
     }, onViewAllClick = {
         // Handle view all click (navigate to view all certificates screen)

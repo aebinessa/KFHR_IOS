@@ -18,20 +18,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Employee
 import java.util.Date
 
 @Composable
-fun EmployeeDetailScreen(employee: Employee) {
-    Scaffold(
-        bottomBar = { BottomNavigationBar() }
-    ) { paddingValues ->
+fun EmployeeDetailScreen(navController: NavHostController, employee: Employee) {
+    Surface(
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
@@ -51,7 +51,7 @@ fun EmployeeDetailScreen(employee: Employee) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    IconButton(onClick = { /* Handle back click */ }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow), // Replace with your back arrow icon
                             contentDescription = "Back",
@@ -143,6 +143,7 @@ fun EmployeeDetailScreen(employee: Employee) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewEmployeeDetailScreen() {
+    val navController = rememberNavController()
     val employee = Employee(1,  "Feras Alshadad", "Role", "email@example.com", "123456789", Date(), "Male", "https://example.com/profile1.jpg", 123, 1, 1, 100)
-    EmployeeDetailScreen(employee)
+    EmployeeDetailScreen(navController,employee)
 }

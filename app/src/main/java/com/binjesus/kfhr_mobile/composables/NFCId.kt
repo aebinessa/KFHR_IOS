@@ -1,6 +1,5 @@
 package com.binjesus.kfhr_mobile.composables
 
-import BottomNavigationBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,15 +31,11 @@ import java.util.Date
 
 @Composable
 fun UserProfileScreen(navController: NavHostController, employee: Employee) {
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController = navController)
-        }
-    ) { paddingValues ->
+    Surface(
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
         ) {
             BoxWithConstraints(
                 modifier = Modifier

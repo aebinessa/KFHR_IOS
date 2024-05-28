@@ -18,6 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Certificate
@@ -25,7 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun CertificateSubmissionScreen(onSubmit: (Certificate) -> Unit) {
+fun CertificateSubmissionScreen(navController: NavHostController,onSubmit: (Certificate) -> Unit) {
     val context = LocalContext.current
 
     var certificateName by remember { mutableStateOf("") }
@@ -60,7 +62,6 @@ fun CertificateSubmissionScreen(onSubmit: (Certificate) -> Unit) {
                 }
             }
         },
-        bottomBar = { BottomNavigationBar() }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -86,28 +87,36 @@ fun CertificateSubmissionScreen(onSubmit: (Certificate) -> Unit) {
                         value = certificateName,
                         onValueChange = { certificateName = it },
                         label = { Text("Certificate Name") },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                     )
                     OutlinedTextField(
                         value = issueDate,
                         onValueChange = { issueDate = it },
                         label = { Text("Certificate Start") },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                     )
                     OutlinedTextField(
                         value = expirationDate,
                         onValueChange = { expirationDate = it },
                         label = { Text("Certificate Expiration") },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                     )
                     OutlinedTextField(
                         value = verificationURL,
                         onValueChange = { verificationURL = it },
                         label = { Text("Certificate URL") },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
                     )
                 }
@@ -147,7 +156,8 @@ fun CertificateSubmissionScreen(onSubmit: (Certificate) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewCertificateSubmissionScreen() {
-    CertificateSubmissionScreen(onSubmit = { certificate ->
+    val navController = rememberNavController()
+    CertificateSubmissionScreen(navController , onSubmit = { certificate ->
         // Handle certificate submission
     })
 }

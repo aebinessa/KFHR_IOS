@@ -27,7 +27,7 @@ fun NFCNav(navController: NavController, modifier: Modifier = Modifier) {
             .shadow(4.dp, CircleShape) // Add shadow
             .clip(CircleShape)
             .background(Color(0xff27ae60))
-            .clickable { navController.navigate("yourDestination") } // Make it clickable and navigate
+            .clickable { navController.navigate("NfcId") } // Make it clickable and navigate
     ) {
         Icon(
             painter = painterResource(id = R.drawable.card), // Replace with your actual icon resource

@@ -52,12 +52,12 @@ fun CertificateSubmissionScreen(navController: NavHostController,onSubmit: (Cert
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { /* Handle notifications click */ }) {
+                IconButton(onClick = { navController.navigate("Notifications") }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.bell),
+                        painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
                         contentDescription = "Notifications",
                         tint = Color.Black,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }

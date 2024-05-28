@@ -2,13 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="CertificatesScreenPreview">
+        <State />
+      </entry>
       <entry key="NotificationScreenPreview">
         <State />
       </entry>
       <entry key="PreviewApplyForLeaveScreen">
-        <State />
-      </entry>
-      <entry key="PreviewAttendanceList">
         <State />
       </entry>
       <entry key="PreviewEmployeeDirectoryScreen">

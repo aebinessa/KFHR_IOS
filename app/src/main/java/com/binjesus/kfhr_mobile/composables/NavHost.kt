@@ -1,5 +1,6 @@
 package com.binjesus.kfhr_mobile.composables
 
+import ApplyForLeaveScreen
 import HomeScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -119,7 +120,7 @@ fun ScreensNavHost(
                 ITContactScreen(navController)
             }
             composable("MyCertificates"){
-
+                CertificatesApp(navController)
             }
             composable("Notifications"){
                 NotificationScreen(navController)
@@ -243,6 +244,7 @@ fun ScreensNavHost(
                     navController.navigate("EmployeeDetail/${employee.id}")
                 }
             }
+
             composable("LeavesScreen"){
                 ApplyForLeaveScreen(navController, onSubmit = { leave ->
                     // Handle the leave application submission

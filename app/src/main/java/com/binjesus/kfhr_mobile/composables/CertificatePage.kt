@@ -1,6 +1,7 @@
 package com.binjesus.kfhr_mobile.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,27 +18,31 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
+import com.binjesus.kfhr_mobile.models.Certificate
 import java.util.*
-
-
-
 
 @Composable
 fun CertificatesApp(navController: NavHostController) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Add certificate action */ },
-                backgroundColor = Color.Green,
-                contentColor = Color.White
+                onClick = { navController.navigate("SubmitCertificate") },
+                backgroundColor = Color(0xFF4CAF50),
+                contentColor = Color.Black,
+                modifier = Modifier.size(56.dp) // Smaller FAB
             ) {
-                Text("+", fontSize = 24.sp)
+                Icon(
+                    painter = painterResource(id = R.drawable.add),
+                    contentDescription = "Add",
+                    tint = Color.Black,
+                    modifier = Modifier.size(36.dp) // Change 48.dp to the desired size
+
+                )
             }
         },
         floatingActionButtonPosition = FabPosition.End,
         isFloatingActionButtonDocked = false,
     ) { innerPadding ->
-        // Add padding provided by scaffold to avoid overlapping with FAB
         Box(modifier = Modifier.padding(innerPadding)) {
             CertificatesScreen(navController = navController)
         }
@@ -49,6 +54,7 @@ fun CertificatesScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFF0F0F0))
             .padding(16.dp)
     ) {
         Header(navController = navController)
@@ -59,35 +65,49 @@ fun CertificatesScreen(navController: NavHostController) {
 
 @Composable
 fun Header(navController: NavHostController) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "My Certificates:",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "My Certificates:",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(onClick = { navController.navigate("Notifications") }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.bell),
+                    contentDescription = "Notifications",
+                    tint = Color(0xFF0B0C0C),
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = { /* Recommended action */ },
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text("Recommended", color = Color.White)
-        }
-        IconButton(onClick = { /* Notification action */ }) {
-            Icon(
-                modifier = Modifier.size(30.dp),
-                painter = painterResource(id = R.drawable.bell),
-                contentDescription = "Notifications"
-            )
         }
     }
 }
 
 @Composable
 fun CertificateList() {
-    val certificates = List(5) { "Certificate ${it + 1}" }
+    val certificates = listOf(
+        Certificate(1, 1, "Certificate 1", Date(), Date(), "https://example.com"),
+        Certificate(2, 1, "Certificate 2", Date(), Date(), "https://example.com"),
+        Certificate(3, 1, "Certificate 3", Date(), Date(), "https://example.com"),
+        Certificate(4, 1, "Certificate 4", Date(), Date(), "https://example.com"),
+        Certificate(5, 1, "Certificate 5", Date(), Date(), "https://example.com")
+    )
     LazyColumn {
         items(certificates) { certificate ->
             CertificateCard(certificate)
@@ -97,31 +117,42 @@ fun CertificateList() {
 }
 
 @Composable
-fun CertificateCard(certificate: String) {
+fun CertificateCard(certificate: Certificate) {
     Card(
         elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        backgroundColor = Color(0xFFF5F5F5) // light gray background color
+        backgroundColor = Color.White
     ) {
         Column(
             modifier = Modifier
-                .background(
-                    color = Color.White,
-                    shape = MaterialTheme.shapes.medium
-                )
+                .background(Color.White)
                 .padding(16.dp)
         ) {
             Text(
-                text = certificate,
+                text = certificate.certificateName,
                 fontSize = 18.sp,
-                color = Color.Black
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF4CAF50)
             )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Supporting line text lorem ipsum dolor sit amet...",
+                text = "Issue Date: ${certificate.issueDate}",
                 fontSize = 14.sp,
                 color = Color.Gray
+            )
+            Text(
+                text = "Expiration Date: ${certificate.expirationDate}",
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = certificate.verificationURL,
+                fontSize = 14.sp,
+                color = Color.Blue,
+                modifier = Modifier.clickable { /* Handle URL click */ }
             )
         }
     }

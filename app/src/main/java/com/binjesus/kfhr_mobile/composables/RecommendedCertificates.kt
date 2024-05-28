@@ -69,7 +69,7 @@ fun RecommendedCertificatesScreen(navController: NavHostController, certificates
                 }
             }
             FloatingActionButton(
-                onClick = { navController.navigate("Notifications") },
+                onClick = { navController.navigate("MyCertificates") },
                 backgroundColor = Color(0xFF4CAF50),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)

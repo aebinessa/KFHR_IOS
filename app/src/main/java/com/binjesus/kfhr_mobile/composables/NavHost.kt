@@ -122,6 +122,11 @@ fun ScreensNavHost(
             composable("MyCertificates"){
                 CertificatesApp(navController)
             }
+            composable("SubmitCertificate"){
+                CertificateSubmissionScreen(navController,onSubmit = { certificate ->
+                    // Handle the certificate application submission
+                })
+            }
             composable("Notifications"){
                 NotificationScreen(navController)
 

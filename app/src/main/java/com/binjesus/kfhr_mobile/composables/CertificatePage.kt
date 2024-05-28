@@ -1,6 +1,5 @@
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+package com.binjesus.kfhr_mobile.composables
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,22 +14,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
+import java.util.*
 
-class CertificatesActivity : ComponentActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            CertificatesApp()
-        }
-    }
-}
+
 
 @Composable
-fun CertificatesApp() {
+fun CertificatesApp(navController: NavHostController) {
     Scaffold(
-        bottomBar = { BottomNavigationBar() },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Add certificate action */ },
@@ -45,63 +39,26 @@ fun CertificatesApp() {
     ) { innerPadding ->
         // Add padding provided by scaffold to avoid overlapping with FAB
         Box(modifier = Modifier.padding(innerPadding)) {
-            CertificatesScreen()
+            CertificatesScreen(navController = navController)
         }
     }
 }
 
 @Composable
-fun BottomNavigationBar() {
-    val items = listOf(
-        BottomNavItem("HOME", R.drawable.home, false),
-        BottomNavItem("ATTENDANCE", R.drawable.security, false),
-        BottomNavItem("LEAVES", R.drawable.document, false),
-        BottomNavItem("CERTS", R.drawable.onlinecertificate, true),
-        BottomNavItem("DIRECTORY", R.drawable.agenda, false)
-    )
-
-    BottomNavigation(
-        backgroundColor = Color(0xFF4CAF50)
-    ) {
-        items.forEach { item ->
-            BottomNavigationItem(
-                selected = item.selected,
-                onClick = { /* Handle navigation click */ },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.iconRes),
-                        contentDescription = item.label,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                label = {
-                    Text(
-                        text = item.label,
-                        fontSize = 8.sp,
-                        fontWeight = if (item.selected) FontWeight.Bold else FontWeight.Normal
-                    )
-                },
-                modifier = Modifier.width(70.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun CertificatesScreen() {
+fun CertificatesScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Header()
+        Header(navController = navController)
         Spacer(modifier = Modifier.height(16.dp))
         CertificateList()
     }
 }
 
 @Composable
-fun Header() {
+fun Header(navController: NavHostController) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
@@ -109,7 +66,7 @@ fun Header() {
         Text(
             text = "My Certificates:",
             fontSize = 24.sp,
-            fontWeight =  FontWeight.Bold,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.weight(1f)
         )
         Button(
@@ -170,11 +127,9 @@ fun CertificateCard(certificate: String) {
     }
 }
 
-// Example data class for BottomNavItem
-//data class BottomNavItem(val label: String, val iconRes: Int, val selected: Boolean)
-
 @Preview(showBackground = true)
 @Composable
 fun CertificatesScreenPreview() {
-    CertificatesApp()
+    val navController = rememberNavController()
+    CertificatesApp(navController = navController)
 }

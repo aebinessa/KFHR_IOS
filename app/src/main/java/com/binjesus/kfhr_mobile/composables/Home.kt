@@ -28,13 +28,9 @@ import java.util.*
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(navController: NavHostController, employee: Employee, attendance: Attendance, lateMinutesLeft: LateMinutesLeft) {
-    Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController) }
-    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .background(Color.White)
         ) {
             Column(
@@ -88,7 +84,7 @@ fun HomeScreen(navController: NavHostController, employee: Employee, attendance:
                     }
                     Spacer(modifier = Modifier.width(24.dp))
 
-                    IconButton(onClick = { /* Handle bell icon click */ }) {
+                    IconButton(onClick = { navController.navigate("Notifications") }) {
                         Icon(
                             painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
                             contentDescription = "Notifications",
@@ -168,7 +164,6 @@ fun HomeScreen(navController: NavHostController, employee: Employee, attendance:
                     .padding(16.dp) // Add padding from the edges
             )
         }
-    }
 }
 
 @Composable
@@ -201,48 +196,6 @@ fun CheckInOutCard(time: Date, label: String) {
     }
 }
 
-@Composable
-fun BottomNavigationBar(navController: NavHostController) {
-    val items = listOf(
-        BottomNavItem("HOME", R.drawable.home, true),
-        BottomNavItem("ATTENDANCE", R.drawable.security, false),
-        BottomNavItem("LEAVES", R.drawable.document, false),
-        BottomNavItem("CERTS", R.drawable.onlinecertificate, false),
-        BottomNavItem("DIRECTORY", R.drawable.agenda, false)
-    )
-
-    BottomNavigation(
-        backgroundColor = Color(0xFF4CAF50)
-    ) {
-        items.forEach { item ->
-            BottomNavigationItem(
-                selected = item.selected,
-                onClick = { /* Handle navigation click */ },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.iconRes),
-                        contentDescription = item.label,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                label = {
-                    Text(
-                        text = item.label,
-                        fontSize = 8.sp,
-                        fontWeight = if (item.selected) FontWeight.Bold else FontWeight.Normal
-                    )
-                },
-                modifier = Modifier.width(70.dp) // Adjust this width to reduce space
-            )
-        }
-    }
-}
-
-data class BottomNavItem(
-    val label: String,
-    val iconRes: Int,
-    val selected: Boolean
-)
 
 fun calculateTimeLeft(checkOutDateTime: Date): String {
     val currentTime = Date()

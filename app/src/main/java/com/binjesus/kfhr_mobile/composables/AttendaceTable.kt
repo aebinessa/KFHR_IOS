@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Attendance
 import java.text.SimpleDateFormat
@@ -58,7 +60,7 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AttendanceList(attendances: List<Attendance>, employeeId: Int) {
+fun AttendanceList(navController: NavHostController, attendances: List<Attendance>, employeeId: Int) {
     var selectedMonth by remember { mutableStateOf(Calendar.getInstance().get(Calendar.MONTH)) }
     var selectedYear by remember { mutableStateOf(Calendar.getInstance().get(Calendar.YEAR)) }
     var selectedDate: Int? by remember { mutableStateOf(null) }
@@ -94,8 +96,15 @@ fun AttendanceList(attendances: List<Attendance>, employeeId: Int) {
         }
     }
 
-    Scaffold(
-        topBar = {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            // TOP BAR
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,27 +118,16 @@ fun AttendanceList(attendances: List<Attendance>, employeeId: Int) {
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { /* Handle notifications click */ }) {
+                IconButton(onClick = { navController.navigate("Notifications") }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.bell),
+                        painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
                         contentDescription = "Notifications",
                         tint = Color.Black,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
-        },
-        bottomBar = { BottomNavigationBar() }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-                .background(Color.White),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -254,12 +252,13 @@ fun AttendanceList(attendances: List<Attendance>, employeeId: Int) {
                 Text("No attendance records found", style = MaterialTheme.typography.h6)
             }
         }
-    }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewAttendanceList() {
+    val navController = rememberNavController()
     val sampleAttendances = listOf(
         Attendance(
             id = 1,
@@ -293,5 +292,5 @@ fun PreviewAttendanceList() {
         )
     )
 
-    AttendanceList(attendances = sampleAttendances, employeeId = 101)
+    AttendanceList(navController, attendances = sampleAttendances, employeeId = 101)
 }

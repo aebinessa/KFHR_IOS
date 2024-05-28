@@ -18,13 +18,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Leave
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun ApplyForLeaveScreen(onSubmit: (Leave) -> Unit) {
+fun ApplyForLeaveScreen(navController: NavHostController, onSubmit: (Leave) -> Unit) {
     var leaveType by remember { mutableStateOf("") }
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
@@ -75,7 +77,7 @@ fun ApplyForLeaveScreen(onSubmit: (Leave) -> Unit) {
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { /* Handle notifications click */ }) {
+                IconButton(onClick = { navController.navigate("Notifications") }) {
                     Icon(
                         painter = painterResource(id = R.drawable.bell),
                         contentDescription = "Notifications",
@@ -85,7 +87,6 @@ fun ApplyForLeaveScreen(onSubmit: (Leave) -> Unit) {
                 }
             }
         },
-        bottomBar = { BottomNavigationBar() }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -205,7 +206,9 @@ fun ApplyForLeaveScreen(onSubmit: (Leave) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewApplyForLeaveScreen() {
-    ApplyForLeaveScreen(onSubmit = { leave ->
+    val navController = rememberNavController() // Create a dummy NavHostController for preview
+
+    ApplyForLeaveScreen(navController, onSubmit = { leave ->
         // Handle the leave application submission
     })
 }

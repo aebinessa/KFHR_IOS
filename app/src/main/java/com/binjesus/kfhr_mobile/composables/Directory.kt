@@ -21,22 +21,22 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Employee
 import java.util.Date
 
 @Composable
-fun EmployeeDirectoryScreen(employees: List<Employee>, onEmployeeClick: (Employee) -> Unit) {
+fun EmployeeDirectoryScreen(navController: NavHostController,employees: List<Employee>, onEmployeeClick: (Employee) -> Unit) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
-    Scaffold(
-        bottomBar = { BottomNavigationBar() }
-    ) { paddingValues ->
+    Surface(
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .background(Color.White)
         ) {
             // Top Bar with profile, search, and notifications
@@ -61,20 +61,12 @@ fun EmployeeDirectoryScreen(employees: List<Employee>, onEmployeeClick: (Employe
                     modifier = Modifier.weight(1f),
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
-                IconButton(onClick = { /* Handle search click */ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.search), // Replace with actual icon resource
-                        contentDescription = "Search",
-                        tint = Color.Black,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-                IconButton(onClick = { /* Handle notifications click */ }) {
+                IconButton(onClick = { navController.navigate("Notifications") }) {
                     Icon(
                         painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
                         contentDescription = "Notifications",
                         tint = Color.Black,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
@@ -141,51 +133,6 @@ fun EmployeeListItem(employee: Employee, onEmployeeClick: (Employee) -> Unit) {
     }
 }
 
-@Composable
-fun BottomNavigationBar() {
-    val items = listOf(
-        BottomNavItem("HOME", R.drawable.home, true),
-        BottomNavItem("ATTENDANCE", R.drawable.security, false),
-        BottomNavItem("LEAVES", R.drawable.document, false),
-        BottomNavItem("CERTS", R.drawable.onlinecertificate, false),
-        BottomNavItem("DIRECTORY", R.drawable.agenda, false)
-    )
-
-    BottomNavigation(
-        backgroundColor = Color(0xFF4CAF50)
-    ) {
-        items.forEach { item ->
-            BottomNavigationItem(
-                selected = item.selected,
-                onClick = { /* Handle navigation click */ },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.iconRes),
-                        contentDescription = item.label,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                label = {
-                    Text(
-                        text = item.label,
-                        fontSize = 8.sp,
-                        fontWeight = if (item.selected) FontWeight.Bold else FontWeight.Normal
-                    )
-                },
-                modifier = Modifier.width(70.dp) // Adjust this width to reduce space
-            )
-        }
-    }
-}
-
-data class BottomNavItem(
-    val label: String,
-    val iconRes: Int,
-    val selected: Boolean
-)
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewEmployeeDirectoryScreen() {
@@ -195,8 +142,8 @@ fun PreviewEmployeeDirectoryScreen() {
         Employee(3,  "Othman Alkous", "Role", "email@example.com", "123456789", Date(), "Male", "https://example.com/profile3.jpg", 125, 3, 3, 100),
         // Add more employees as needed
     )
-    EmployeeDirectoryScreen(employees) { employee ->
-        // Handle employee click (navigate to detail screen)
-    }
+    val navController = rememberNavController() // Create a dummy NavHostController for preview
+    EmployeeDirectoryScreen(navController, employees) { employee ->
+        "employeeDetail/${employee.id}"    }
 }
 

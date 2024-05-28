@@ -1,6 +1,5 @@
 package com.binjesus.kfhr_mobile.composables
 
-import BottomNavigationBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -39,15 +38,12 @@ fun NotificationScreen(navController: NavHostController) {
         // Add more notifications as needed
     )
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController = navController)
-        }
-    ) { paddingValues ->
+    Surface(
+
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .background(Color.White)
         ) {
             // Top section with profile and name

@@ -256,4 +256,5 @@ fun PreviewApplyForLeaveScreen() {
     ApplyForLeaveScreen(onSubmit = { leave ->
         // Handle the leave application submission
     })
+
 }

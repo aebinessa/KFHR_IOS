@@ -16,17 +16,14 @@ import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.models.Employee
 import com.binjesus.kfhr_mobile.models.LateMinutesLeft
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
-import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.util.Calendar
 import java.util.Date
-import androidx.lifecycle.viewmodel.compose.viewModel
+
 @Composable
 fun ScreensNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = "WelcomeScreen",
-    viewModel: KFHRViewModel = viewModel()// <-- Added ViewModel parameter here
-
+    startDestination: String = "HomeScreen"
 ) {
     Scaffold(
         modifier = modifier,
@@ -135,7 +132,7 @@ fun ScreensNavHost(
 
             }
             composable("SignIn") {
-                SignInScreen(navController, viewModel)
+                SignInScreen(navController)
             }
             composable("HomeScreen") {
                 // Pass dummy data for the preview

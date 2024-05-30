@@ -1,5 +1,6 @@
 package com.binjesus.kfhr_mobile.composables
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,14 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.binjesus.kfhr_mobile.R
-import com.binjesus.kfhr_mobile.models.Employee
-import com.binjesus.kfhr_mobile.network.KFHRApiService
-import com.binjesus.kfhr_mobile.network.LoginRequest
-import com.binjesus.kfhr_mobile.network.RetrofitHelper
+import com.binjesus.kfhr_mobile.utils.Route
+
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
+
 
 @Composable
 fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
@@ -53,7 +51,6 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
     var rememberMe by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -120,11 +117,17 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
             )
         }
 
+       if (viewModel.showValidationError) {
+            errorMessage = "Invalid credentials. Please try again."
+            isLoading = false
+        }
+
         if (isLoading) {
             CircularProgressIndicator()
         } else {
             Button(
                 onClick = {
+                    isLoading = true
                     viewModel.signIn(email, password)
                 },
                 modifier = Modifier
@@ -164,14 +167,3 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
     }
 }
 
-suspend fun signIn(email: String, password: String): Employee? {
-    val apiService = RetrofitHelper.getInstance().create(KFHRApiService::class.java)
-    return try {
-        val response = apiService.login(LoginRequest(email, password))
-        response.employee
-    } catch (e: HttpException) {
-        null
-    } catch (e: IOException) {
-        null
-    }
-}

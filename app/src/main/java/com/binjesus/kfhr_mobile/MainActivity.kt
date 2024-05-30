@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AuthNavHost(startDestination = Route.MainAppRoute)
+                    AuthNavHost(startDestination = Route.WelcomeRoute)
                 }
             }
         }

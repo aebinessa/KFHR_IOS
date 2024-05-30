@@ -1,5 +1,6 @@
 package com.binjesus.kfhr_mobile.composables
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,14 +23,16 @@ fun AuthNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        if (viewModel.token?.token != null) {
-            navController.navigate(Route.MainAppRoute)
-        }
-
         composable(Route.WelcomeRoute) {
+            if (viewModel.token != null) {
+                navController.navigate(Route.MainAppRoute)
+            }
             WelcomeScreen(navController = navController)
         }
         composable(Route.SignInRoute) {
+            if (viewModel.token != null) {
+                navController.navigate(Route.MainAppRoute)
+            }
             SignInScreen(navController = navController, viewModel = viewModel)
         }
         composable(Route.MainAppRoute) {
@@ -38,7 +41,5 @@ fun AuthNavHost(
         composable(Route.ContactItRoute) {
             ContactItScreen(navController)
         }
-
-
     }
 }

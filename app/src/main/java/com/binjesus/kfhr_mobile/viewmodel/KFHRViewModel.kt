@@ -1,5 +1,6 @@
 package com.binjesus.kfhr_mobile.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,11 +14,13 @@ import com.binjesus.kfhr_mobile.models.LateMinutesLeft
 import com.binjesus.kfhr_mobile.models.Leave
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
 import com.binjesus.kfhr_mobile.models.TokenResponse
+import com.binjesus.kfhr_mobile.models.requests.LeaveRequest
+import com.binjesus.kfhr_mobile.models.requests.LoginRequest
+import com.binjesus.kfhr_mobile.models.responses.LoginResponse
 import com.binjesus.kfhr_mobile.network.KFHRApiService
-import com.binjesus.kfhr_mobile.network.LeaveRequest
-import com.binjesus.kfhr_mobile.network.LeaveService
 import com.binjesus.kfhr_mobile.network.RetrofitHelper
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import java.io.IOException
 import java.util.Calendar
 import java.util.Date
@@ -25,6 +28,8 @@ import java.util.Date
 class KFHRViewModel : ViewModel() {
     private val apiService = RetrofitHelper.getInstance().create(KFHRApiService::class.java)
     var token: TokenResponse? by mutableStateOf(null)
+    var showValidationError: Boolean by mutableStateOf(false)
+
     var selectedDirectoryEmployee: Employee? by mutableStateOf(null)
     var certificates: List<Certificate> by mutableStateOf(emptyList())
     var recommendedCertificates: List<RecommendedCertificate> by mutableStateOf(emptyList())
@@ -158,8 +163,29 @@ class KFHRViewModel : ViewModel() {
     }
 
     fun signIn(email: String, password: String) {
-        TODO("Not yet implemented")
+        Log.e("SINGIN", "TOP")
+
+        viewModelScope.launch {
+            try {
+                val loginRequest = LoginRequest(email, password)
+                val response: Response<TokenResponse> = apiService.signIn(loginRequest)
+                Log.e("SINGIN", response.toString())
+
+                if (response.isSuccessful) {
+                    token = response.body()
+                    Log.e("SINGIN5", token?.token.toString())
+                } else {
+                    showValidationError = true
+                    Log.e("SINGIN6", response.toString())
+                }
+
+            } catch (e: Exception) {
+                println("Error: $e")
+                showValidationError = true
+            }
+        }
     }
+
 
     fun submitCertificate(newCertificate: Certificate) {
         TODO("Not yet implemented")
@@ -201,7 +227,6 @@ class KFHRViewModel : ViewModel() {
         notes: String
     ) {
         viewModelScope.launch {
-            val apiService = RetrofitHelper.getInstance().create(LeaveService::class.java)
             try {
                 val leaveRequest = LeaveRequest(employeeId, leaveType, startDate, endDate, notes)
                 val response = apiService.applyForLeave(leaveRequest)
@@ -213,5 +238,4 @@ class KFHRViewModel : ViewModel() {
             }
         }
     }
-
 }

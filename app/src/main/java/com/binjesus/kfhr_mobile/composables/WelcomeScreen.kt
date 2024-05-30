@@ -30,9 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.binjesus.kfhr_mobile.R
+import com.binjesus.kfhr_mobile.utils.Route
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun WelcomeScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,7 +96,7 @@ fun LoginScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(18.dp))
 
                 Button(
-                    onClick = { navController.navigate("SignIn") },
+                    onClick = { navController.navigate(Route.SignInRoute) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 40.dp)
@@ -119,7 +120,7 @@ fun LoginScreen(navController: NavHostController) {
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(top = 8.dp)
-                        .clickable { navController.navigate("ContactIT") }
+                        .clickable { navController.navigate(Route.ContactItRoute) }
                 )
             }
         }

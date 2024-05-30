@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -43,7 +42,7 @@ data class ITEmployee(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ITContactScreen(navController: NavHostController) {
+fun ContactItScreen(navController: NavHostController) {
     val employees = listOf(
         ITEmployee("jacqueline salford", "+9665435678", "jacquelinesalford@abcd.com"),
         ITEmployee("Elon Tusk", "+9655643567", "ElonTusk@abcd.com"),

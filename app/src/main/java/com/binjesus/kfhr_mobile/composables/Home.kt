@@ -22,12 +22,15 @@ import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.models.Employee
 import com.binjesus.kfhr_mobile.models.LateMinutesLeft
+import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(navController: NavHostController, employee: Employee, attendance: Attendance, lateMinutesLeft: LateMinutesLeft) {
+fun HomeScreen(navController: NavHostController,
+               viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -50,7 +53,7 @@ fun HomeScreen(navController: NavHostController, employee: Employee, attendance:
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Image(
-                        painter = rememberImagePainter(data = employee.profilePicURL),
+                        painter = rememberImagePainter(data = viewModel.employee.profilePicURL),
                         contentDescription = "Profile Picture",
                         modifier = Modifier
                             .size(70.dp)
@@ -71,12 +74,12 @@ fun HomeScreen(navController: NavHostController, employee: Employee, attendance:
                             horizontalAlignment = Alignment.Start
                         ) {
                             Text(
-                                text = employee.name,
+                                text = viewModel.employee.name,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = employee.role,
+                                text = viewModel.employee.role,
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -84,7 +87,7 @@ fun HomeScreen(navController: NavHostController, employee: Employee, attendance:
                     }
                     Spacer(modifier = Modifier.width(24.dp))
 
-                    IconButton(onClick = { navController.navigate("Notifications") }) {
+                    IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
                             contentDescription = "Notifications",
@@ -105,7 +108,7 @@ fun HomeScreen(navController: NavHostController, employee: Employee, attendance:
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        val timeLeft = calculateTimeLeft(attendance.checkOutDateTime)
+                        val timeLeft = calculateTimeLeft(viewModel.attendance.checkOutDateTime)
                         Text(
                             text = timeLeft,
                             fontSize = 36.sp,
@@ -127,8 +130,8 @@ fun HomeScreen(navController: NavHostController, employee: Employee, attendance:
                         .padding(8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    CheckInOutCard(time = attendance.checkInDateTime, label = "Check In")
-                    CheckInOutCard(time = attendance.checkOutDateTime, label = "Check Out")
+                    CheckInOutCard(time = viewModel.attendance.checkInDateTime, label = "Check In")
+                    CheckInOutCard(time = viewModel.attendance.checkOutDateTime, label = "Check Out")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -148,7 +151,7 @@ fun HomeScreen(navController: NavHostController, employee: Employee, attendance:
                             modifier = Modifier.size(40.dp) // Smaller size
                         )
                         Text(
-                            text = "Late Minutes Left : ${lateMinutesLeft.time}",
+                            text = "Late Minutes Left : ${viewModel.lateMinutesLeft.time}",
                             fontSize = 16.sp,
                             color = Color.Gray
                         )
@@ -210,31 +213,5 @@ fun calculateTimeLeft(checkOutDateTime: Date): String {
 @Composable
 fun PreviewHomeScreen() {
     val navController = rememberNavController()
-    val employee = Employee(
-        id = 1,
-        name = "Abdullah Bin Essa",
-        role = "Forssah Tech Trainee",
-        email = "abdullah@example.com",
-        phone = "123456789",
-        dob = Date(),
-        gender = "Male",
-        profilePicURL = "https://example.com/profile.jpg",
-        nfcIdNumber = 123,
-        positionId = 1,
-        departmentId = 1,
-        pointsEarned = 100
-    )
-    val attendance = Attendance(
-        id = 1,
-        employeeId = 1,
-        checkInDateTime = Date(),
-        checkOutDateTime = Date(Date().time + 3600000) // 1 hour later
-    )
-    val lateMinutesLeft = LateMinutesLeft(
-        id = 1,
-        employeeId = 1,
-        time = 27,
-        month = Date()
-    )
-    HomeScreen(navController, employee, attendance, lateMinutesLeft)
+    HomeScreen(navController)
 }

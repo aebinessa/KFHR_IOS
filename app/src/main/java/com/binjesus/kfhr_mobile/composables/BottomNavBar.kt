@@ -15,15 +15,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.binjesus.kfhr_mobile.R
+import com.binjesus.kfhr_mobile.utils.Route
 
 @Composable
 fun BottomNavBar(navController: NavController) {
     val items = listOf(
-        BottomNavItem("HOME", R.drawable.home, "HomeScreen"),
-        BottomNavItem("ATTENDANCE", R.drawable.security, "AttendanceScreen"),
-        BottomNavItem("LEAVES", R.drawable.document, "LeavesScreen"),
-        BottomNavItem("CERTS", R.drawable.onlinecertificate, "CertsScreen"),
-        BottomNavItem("DIRECTORY", R.drawable.agenda, "DirectoryScreen")
+        BottomNavItem("HOME", R.drawable.home, Route.HomeRoute),
+        BottomNavItem("ATTENDANCE", R.drawable.security, Route.AttendanceRoute),
+        BottomNavItem("LEAVES", R.drawable.document, Route.LeavesRoute),
+        BottomNavItem("CERTS", R.drawable.onlinecertificate, Route.RecommendedCertificatesRoute),
+        BottomNavItem("DIRECTORY", R.drawable.agenda, Route.DirectoryRoute)
     )
 
     BottomNavigation(

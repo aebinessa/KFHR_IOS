@@ -22,6 +22,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Attendance
+import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -60,7 +62,8 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AttendanceList(navController: NavHostController, attendances: List<Attendance>, employeeId: Int) {
+fun AttendanceList(navController: NavHostController,
+                   viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var selectedMonth by remember { mutableStateOf(Calendar.getInstance().get(Calendar.MONTH)) }
     var selectedYear by remember { mutableStateOf(Calendar.getInstance().get(Calendar.YEAR)) }
     var selectedDate: Int? by remember { mutableStateOf(null) }
@@ -86,12 +89,11 @@ fun AttendanceList(navController: NavHostController, attendances: List<Attendanc
 
     val filteredAttendances by remember(selectedMonth, selectedYear, selectedDate) {
         derivedStateOf {
-            attendances.filter { attendance ->
+            viewModel.attendances.filter { attendance ->
                 val calAttendance = Calendar.getInstance().apply { time = attendance.checkInDateTime }
                 calAttendance.get(Calendar.YEAR) == selectedYear &&
                         calAttendance.get(Calendar.MONTH) == selectedMonth &&
-                        (selectedDate == null || calAttendance.get(Calendar.DAY_OF_MONTH) == selectedDate) &&
-                        attendance.employeeId == employeeId
+                        (selectedDate == null || calAttendance.get(Calendar.DAY_OF_MONTH) == selectedDate)
             }
         }
     }
@@ -118,7 +120,7 @@ fun AttendanceList(navController: NavHostController, attendances: List<Attendanc
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { navController.navigate("Notifications") }) {
+                IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
                         contentDescription = "Notifications",
@@ -259,38 +261,5 @@ fun AttendanceList(navController: NavHostController, attendances: List<Attendanc
 @Composable
 fun PreviewAttendanceList() {
     val navController = rememberNavController()
-    val sampleAttendances = listOf(
-        Attendance(
-            id = 1,
-            employeeId = 101,
-            checkInDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 1, 8, 30)
-            }.time,
-            checkOutDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 1, 17, 0)
-            }.time
-        ),
-        Attendance(
-            id = 2,
-            employeeId = 101,
-            checkInDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 2, 8, 45)
-            }.time,
-            checkOutDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 2, 17, 15)
-            }.time
-        ),
-        Attendance(
-            id = 3,
-            employeeId = 101,
-            checkInDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 3, 9, 0)
-            }.time,
-            checkOutDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 3, 18, 0)
-            }.time
-        )
-    )
-
-    AttendanceList(navController, attendances = sampleAttendances, employeeId = 101)
+    AttendanceList(navController)
 }

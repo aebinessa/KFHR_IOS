@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
+import com.binjesus.kfhr_mobile.utils.Route
 
 @Composable
 fun NFCNav(navController: NavController, modifier: Modifier = Modifier) {
@@ -27,7 +28,7 @@ fun NFCNav(navController: NavController, modifier: Modifier = Modifier) {
             .shadow(4.dp, CircleShape) // Add shadow
             .clip(CircleShape)
             .background(Color(0xff27ae60))
-            .clickable { navController.navigate("NfcId") } // Make it clickable and navigate
+            .clickable { navController.navigate(Route.NFCRoute) } // Make it clickable and navigate
     ) {
         Icon(
             painter = painterResource(id = R.drawable.card), // Replace with your actual icon resource

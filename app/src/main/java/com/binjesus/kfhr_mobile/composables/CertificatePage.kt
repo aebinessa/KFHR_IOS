@@ -15,18 +15,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Certificate
+import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.util.*
 
 @Composable
-fun CertificatesApp(navController: NavHostController) {
+fun CertificatesApp(navController: NavHostController, viewModel: KFHRViewModel = viewModel()) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate("SubmitCertificate") },
+                onClick = { navController.navigate(Route.SubmitCertificateRoute) },
                 backgroundColor = Color(0xFF4CAF50),
                 contentColor = Color.Black,
                 modifier = Modifier.size(56.dp) // Smaller FAB
@@ -43,23 +47,16 @@ fun CertificatesApp(navController: NavHostController) {
         floatingActionButtonPosition = FabPosition.End,
         isFloatingActionButtonDocked = false,
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            CertificatesScreen(navController = navController)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF0F0F0))
+                .padding(innerPadding)
+        ) {
+            Header(navController = navController)
+            Spacer(modifier = Modifier.height(16.dp))
+            CertificateList(viewModel)
         }
-    }
-}
-
-@Composable
-fun CertificatesScreen(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF0F0F0))
-            .padding(16.dp)
-    ) {
-        Header(navController = navController)
-        Spacer(modifier = Modifier.height(16.dp))
-        CertificateList()
     }
 }
 
@@ -79,7 +76,7 @@ fun Header(navController: NavHostController) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f)
             )
-            IconButton(onClick = { navController.navigate("Notifications") }) {
+            IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.bell),
                     contentDescription = "Notifications",
@@ -100,16 +97,9 @@ fun Header(navController: NavHostController) {
 }
 
 @Composable
-fun CertificateList() {
-    val certificates = listOf(
-        Certificate(1, 1, "Certificate 1", Date(), Date(), "https://example.com"),
-        Certificate(2, 1, "Certificate 2", Date(), Date(), "https://example.com"),
-        Certificate(3, 1, "Certificate 3", Date(), Date(), "https://example.com"),
-        Certificate(4, 1, "Certificate 4", Date(), Date(), "https://example.com"),
-        Certificate(5, 1, "Certificate 5", Date(), Date(), "https://example.com")
-    )
+fun CertificateList(viewModel: KFHRViewModel = viewModel()) {
     LazyColumn {
-        items(certificates) { certificate ->
+        items(viewModel.certificates) { certificate ->
             CertificateCard(certificate)
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -162,5 +152,5 @@ fun CertificateCard(certificate: Certificate) {
 @Composable
 fun CertificatesScreenPreview() {
     val navController = rememberNavController()
-    CertificatesApp(navController = navController)
+    CertificatesApp(navController = navController, viewModel = viewModel())
 }

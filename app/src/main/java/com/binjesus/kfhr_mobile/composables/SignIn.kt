@@ -41,12 +41,13 @@ import com.binjesus.kfhr_mobile.models.Employee
 import com.binjesus.kfhr_mobile.network.KFHRApiService
 import com.binjesus.kfhr_mobile.network.LoginRequest
 import com.binjesus.kfhr_mobile.network.RetrofitHelper
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
 @Composable
-fun SignInScreen(navController: NavController) {
+fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberMe by remember { mutableStateOf(false) }
@@ -124,22 +125,7 @@ fun SignInScreen(navController: NavController) {
         } else {
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        isLoading = true
-                        errorMessage = ""
-                        try {
-                            val result = signIn(email, password)
-                            if (result != null) {
-                                // Navigate to another screen or handle successful sign-in
-                                navController.navigate("HomeScreen")
-                            } else {
-                                errorMessage = "Invalid Email or Password"
-                            }
-                        } catch (e: Exception) {
-                            errorMessage = e.message ?: "Unknown error occurred"
-                        }
-                        isLoading = false
-                    }
+                    viewModel.signIn(email, password)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

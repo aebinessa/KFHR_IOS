@@ -26,9 +26,13 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
-fun RecommendedCertificatesScreen(navController: NavHostController, certificates: List<RecommendedCertificate>, onCertificateClick: (RecommendedCertificate) -> Unit, onViewAllClick: () -> Unit) {
+fun RecommendedCertificatesScreen(navController: NavHostController,
+                                  viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+                                  onCertificateClick: (RecommendedCertificate) -> Unit,
+                                  onViewAllClick: () -> Unit) {
     Scaffold(
         topBar = {
             Row(
@@ -63,7 +67,7 @@ fun RecommendedCertificatesScreen(navController: NavHostController, certificates
                     .background(Color.White)
                     .padding(16.dp)
             ) {
-                items(certificates) { certificate ->
+                items(viewModel.recommendedCertificates) { certificate ->
                     RecommendedCertificateCard(certificate = certificate, onClick = { onCertificateClick(certificate) })
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -144,15 +148,9 @@ fun RecommendedCertificateCard(certificate: RecommendedCertificate, onClick: () 
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecommendedCertificatesScreen() {
-    val certificates = listOf(
-        RecommendedCertificate(1, "CCNA", "Cisco", 100, "https://www.cisco.com", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5JJdkCaqPHmjegj3ggaiHufw4SH5wYZoT3kDcDNDAdw&s"),
-        RecommendedCertificate(2, "CCNP", "Cisco", 200, "https://www.cisco.com", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5JJdkCaqPHmjegj3ggaiHufw4SH5wYZoT3kDcDNDAdw&s"),
-        RecommendedCertificate(3, "AWS Certified Solutions Architect", "Amazon", 150, "https://www.aws.training", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5JJdkCaqPHmjegj3ggaiHufw4SH5wYZoT3kDcDNDAdw&s"),
-        RecommendedCertificate(4, "Google Cloud Professional Data Engineer", "Google", 150, "https://cloud.google.com/certification", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5JJdkCaqPHmjegj3ggaiHufw4SH5wYZoT3kDcDNDAdw&s")
-    )
     val navController = rememberNavController()
 
-    RecommendedCertificatesScreen(navController, certificates, onCertificateClick = { certificate ->
+    RecommendedCertificatesScreen(navController, onCertificateClick = { certificate ->
         // Handle certificate click (navigate to detail screen)
     }, onViewAllClick = {
         // Handle view all click (navigate to view all certificates screen)

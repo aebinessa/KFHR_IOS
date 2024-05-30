@@ -26,10 +26,13 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Employee
+import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.util.Date
 
 @Composable
-fun EmployeeDirectoryScreen(navController: NavHostController,employees: List<Employee>, onEmployeeClick: (Employee) -> Unit) {
+fun EmployeeDirectoryScreen(navController: NavHostController,
+                            viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
     Surface(
@@ -61,7 +64,7 @@ fun EmployeeDirectoryScreen(navController: NavHostController,employees: List<Emp
                     modifier = Modifier.weight(1f),
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
-                IconButton(onClick = { navController.navigate("Notifications") }) {
+                IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
                         contentDescription = "Notifications",
@@ -88,10 +91,11 @@ fun EmployeeDirectoryScreen(navController: NavHostController,employees: List<Emp
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                items(employees.filter {
+                items(viewModel.employees.filter {
                     it.name.contains(searchQuery.text, ignoreCase = true)
                 }) { employee ->
-                    EmployeeListItem(employee, onEmployeeClick)
+                    viewModel.selectedDirectoryEmployee = employee
+                    EmployeeListItem(employee, {navController.navigate(Route.EmployeeDetailRoute)})
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -100,13 +104,13 @@ fun EmployeeDirectoryScreen(navController: NavHostController,employees: List<Emp
 }
 
 @Composable
-fun EmployeeListItem(employee: Employee, onEmployeeClick: (Employee) -> Unit) {
+fun EmployeeListItem(employee: Employee, onEmployeeClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onEmployeeClick(employee) }
+            .clickable { onEmployeeClick() }
     ) {
         Image(
             painter = rememberImagePainter(employee.profilePicURL),
@@ -136,14 +140,7 @@ fun EmployeeListItem(employee: Employee, onEmployeeClick: (Employee) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewEmployeeDirectoryScreen() {
-    val employees = listOf(
-        Employee(1,  "Feras Alshadad", "Role", "email@example.com", "123456789", Date(), "Male", "https://example.com/profile1.jpg", 123, 1, 1, 100),
-        Employee(2,  "Abdullah Bin Essa", "Role", "email@example.com", "123456789", Date(), "Male", "https://example.com/profile2.jpg", 124, 2, 2, 100),
-        Employee(3,  "Othman Alkous", "Role", "email@example.com", "123456789", Date(), "Male", "https://example.com/profile3.jpg", 125, 3, 3, 100),
-        // Add more employees as needed
-    )
     val navController = rememberNavController() // Create a dummy NavHostController for preview
-    EmployeeDirectoryScreen(navController, employees) { employee ->
-        "employeeDetail/${employee.id}"    }
+    EmployeeDirectoryScreen(navController)
 }
 

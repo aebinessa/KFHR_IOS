@@ -23,11 +23,14 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Certificate
+import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun CertificateSubmissionScreen(navController: NavHostController,onSubmit: (Certificate) -> Unit) {
+fun CertificateSubmissionScreen(navController: NavHostController,
+                                viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val context = LocalContext.current
 
     var certificateName by remember { mutableStateOf("") }
@@ -52,7 +55,7 @@ fun CertificateSubmissionScreen(navController: NavHostController,onSubmit: (Cert
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { navController.navigate("Notifications") }) {
+                IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
                         contentDescription = "Notifications",
@@ -134,7 +137,7 @@ fun CertificateSubmissionScreen(navController: NavHostController,onSubmit: (Cert
                             expirationDate = expirationDateParsed,
                             verificationURL = verificationURL
                         )
-                        onSubmit(newCertificate)
+                        viewModel.submitCertificate(newCertificate)
                         Toast.makeText(context, "Certificate submitted successfully", Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
                         Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -157,7 +160,5 @@ fun CertificateSubmissionScreen(navController: NavHostController,onSubmit: (Cert
 @Composable
 fun PreviewCertificateSubmissionScreen() {
     val navController = rememberNavController()
-    CertificateSubmissionScreen(navController , onSubmit = { certificate ->
-        // Handle certificate submission
-    })
+    CertificateSubmissionScreen(navController)
 }

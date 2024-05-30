@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +28,7 @@ import com.binjesus.kfhr_mobile.models.Employee
 import java.util.Date
 
 @Composable
-fun UserProfileScreen(navController: NavHostController, employee: Employee) {
+fun NFCIdScreen(navController: NavHostController, employee: Employee) {
     Surface(
     ) {
         Column(
@@ -174,5 +172,5 @@ fun UserProfileScreenPreview() {
 
     val navController = rememberNavController()
 
-    UserProfileScreen(navController = navController, employee = employee)
+    NFCIdScreen(navController = navController, employee = employee)
 }

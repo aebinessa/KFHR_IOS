@@ -1,6 +1,6 @@
 package com.binjesus.kfhr_mobile.utils
 
-class Constants {
+class Endpoint {
     companion object {
         const val baseUrl = "https://coded-bank-api.eapi.joincoded.com/"
         const val signupEndpoint = "signup"

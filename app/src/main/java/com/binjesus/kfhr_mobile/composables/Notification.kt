@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -21,26 +22,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 data class NotificationItem(val title: String, val time: String)
 
 @Composable
-fun NotificationScreen(navController: NavHostController) {
-    val notifications = listOf(
-        NotificationItem("Leave Request", "Just Now"),
-        NotificationItem("New Message", "5 minutes ago"),
-        NotificationItem("Meeting Reminder", "10 minutes ago"),
-        NotificationItem("Meeting Reminder", "10 minutes ago"),
-        NotificationItem("Meeting Reminder", "10 minutes ago"),
-        NotificationItem("Meeting Reminder", "10 minutes ago"),
-        NotificationItem("Meeting Reminder", "10 minutes ago"),
-        NotificationItem("Meeting Reminder", "10 minutes ago")
-        // Add more notifications as needed
-    )
-
-    Surface(
-
-    ) {
+fun NotificationScreen(viewModel: KFHRViewModel= androidx.lifecycle.viewmodel.compose.viewModel()) {
+    Surface{
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -99,8 +87,8 @@ fun NotificationScreen(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                items(notifications.size) { index ->
-                    NotificationCard(notification = notifications[index], color = Color(0xFF64B167))
+                items(viewModel.notifications) { notification ->
+                    NotificationCard(notification = notification, color = Color(0xFF64B167))
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -143,6 +131,5 @@ fun NotificationCard(notification: NotificationItem, color: Color) {
 @Preview(showBackground = true)
 @Composable
 fun NotificationScreenPreview() {
-    val navController = rememberNavController()
-    NotificationScreen(navController = navController)
+    NotificationScreen()
 }

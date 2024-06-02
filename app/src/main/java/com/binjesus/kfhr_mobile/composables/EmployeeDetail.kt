@@ -114,12 +114,12 @@ fun EmployeeDetailScreen(navController: NavHostController, employee: Employee) {
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = employee.role,
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center,
-                        color = Color.Gray
-                    )
+//                    Text(
+//                        text = employee.role,
+//                        fontSize = 16.sp,
+//                        textAlign = TextAlign.Center,
+//                        color = Color.Gray
+//                    )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = employee.email,
@@ -140,10 +140,3 @@ fun EmployeeDetailScreen(navController: NavHostController, employee: Employee) {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewEmployeeDetailScreen() {
-    val navController = rememberNavController()
-    val employee = Employee(1,  "Feras Alshadad", "Role", "email@example.com", "123456789", Date(), "Male", "https://example.com/profile1.jpg", 123, 1, 1, 100)
-    EmployeeDetailScreen(navController,employee)
-}

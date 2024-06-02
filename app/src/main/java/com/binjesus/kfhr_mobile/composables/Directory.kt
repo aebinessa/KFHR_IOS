@@ -7,96 +7,75 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Employee
-import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
-import java.util.Date
 
 @Composable
-fun EmployeeDirectoryScreen(navController: NavHostController,
-                            viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun EmployeeDirectoryScreen(navController: NavController, viewModel: KFHRViewModel) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+    val employees by viewModel.employees
+    val isLoading by viewModel.isLoading
+    val errorMessage by viewModel.errorMessage
 
-    Surface(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
+        Text(
+            text = "Employee Directory",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            label = { Text("Search") },
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-        ) {
-            // Top Bar with profile, search, and notifications
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Image(
-                    painter = rememberImagePainter("https://example.com/profile.jpg"),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                )
-                Text(
-                    text = "Directory",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                )
-                IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
-                        contentDescription = "Notifications",
-                        tint = Color.Black,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+        )
+
+        when {
+            isLoading -> {
+                CircularProgressIndicator()
             }
-
-            // Search Bar
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                label = { Text("Search") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(24.dp)
-            )
-
-            // Employee List
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-            ) {
-                items(viewModel.employees.filter {
-                    it.name.contains(searchQuery.text, ignoreCase = true)
-                }) { employee ->
-                    viewModel.selectedDirectoryEmployee = employee
-                    EmployeeListItem(employee, {navController.navigate(Route.EmployeeDetailRoute)})
-                    Spacer(modifier = Modifier.height(8.dp))
+            errorMessage.isNotEmpty() -> {
+                Text(text = errorMessage, color = Color.Red)
+            }
+            else -> {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(employees.filter {
+                        it.name.contains(searchQuery.text, ignoreCase = true)
+                    }) { employee ->
+                        EmployeeListItem(employee) {
+                            viewModel.selectedDirectoryEmployee = employee
+                            navController.navigate("EmployeeDetailRoute")
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             }
         }
@@ -104,43 +83,65 @@ fun EmployeeDirectoryScreen(navController: NavHostController,
 }
 
 @Composable
-fun EmployeeListItem(employee: Employee, onEmployeeClick: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+fun EmployeeListItem(employee: Employee, onClick: () -> Unit) {
+    Surface(
+        shape = MaterialTheme.shapes.medium,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { onEmployeeClick() }
+            .padding(8.dp)
+            .clickable(onClick = onClick)
     ) {
-        Image(
-            painter = rememberImagePainter(employee.profilePicURL),
-            contentDescription = "Profile Picture",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color.Gray),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column {
-            Text(
-                text = employee.name,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Image(
+                painter = rememberImagePainter(employee.profilePicURL),
+                contentDescription = "Profile Picture",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
             )
-            Text(
-                text = employee.role,
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Text(
+                    text = employee.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = employee.email,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Position ID:",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
+                        )
+                        Text(
+                            text = employee.positionId?.toString() ?: "N/A",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Department ID:",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
+                        )
+                        Text(
+                            text = employee.departmentId?.toString() ?: "N/A",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewEmployeeDirectoryScreen() {
-    val navController = rememberNavController() // Create a dummy NavHostController for preview
-    EmployeeDirectoryScreen(navController)
-}
-

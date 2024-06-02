@@ -78,11 +78,6 @@ fun HomeScreen(navController: NavHostController,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
                             )
-                            Text(
-                                text = viewModel.employee.role,
-                                fontSize = 14.sp,
-                                color = Color.Gray
-                            )
                         }
                     }
                     Spacer(modifier = Modifier.width(24.dp))

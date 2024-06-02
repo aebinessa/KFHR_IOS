@@ -19,6 +19,7 @@ import java.util.Calendar
 import java.util.Date
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.binjesus.kfhr_mobile.utils.Route
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun ScreensNavHost(
@@ -47,12 +48,11 @@ fun ScreensNavHost(
                     name = "Abdullah Essa Bin Essa",
                     password = "qwerty",
                     email = "abdullah@example.com",
-                    phone = "123456789",
-                    dob = Date(),
-                    gender = "Male",
+                    dob = "",
+                    gender = 1,
                     profilePicURL = "https://example.com/profile.jpg",
                     nfcIdNumber = 123,
-                    positionId = 1,
+                    positionId  = 1,
                     departmentId = 1,
                     pointsEarned = 100,
                     isAdmin = false
@@ -85,6 +85,7 @@ fun ScreensNavHost(
                 AttendanceList(navController, viewModel)
             }
             composable(Route.DirectoryRoute) {
+                viewModel.getEmployees()
                 EmployeeDirectoryScreen(navController, viewModel)
             }
 

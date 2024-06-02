@@ -17,7 +17,7 @@ interface KFHRApiService {
     suspend fun signIn(@Body request: LoginRequest): Response<TokenResponse>
 
     @GET(Endpoint.getEmployeesEndpoint)
-    suspend fun getEmployees(@Header("Authorization") token: String): Response<List<Employee>>
+    suspend fun getEmployees(@Header("Authorization") token: String): List<Employee>
 
 
     @POST("api/admin/leavesResponse")

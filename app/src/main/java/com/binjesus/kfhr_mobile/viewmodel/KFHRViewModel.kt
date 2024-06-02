@@ -20,6 +20,7 @@ import com.binjesus.kfhr_mobile.network.RetrofitHelper
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 
@@ -46,7 +47,6 @@ class KFHRViewModel : ViewModel() {
         fetchNotifications()
         fetchMyCertificates()
         fetchRecommendedCertificates()
-        getEmployees()
     }
 
 //
@@ -60,13 +60,6 @@ fun signIn(email: String, password: String) {
                 token = response.body()?.token // Extract the token string
                 Log.d("KFHRViewModel", "Token received: $token")
                 Log.d("KFHRViewModel", "SignIn Status Code ${response.code()}")
-
-                if (token != null) {
-                    getEmployees()
-                } else {
-                    errorMessage.value = "Error: Token is null after login"
-                    Log.e("KFHRViewModel", "Error: Token is null after login")
-                }
             } else {
                 errorMessage.value = "Login failed: ${response.message()}"
                 Log.e("KFHRViewModel", "Login failed: ${response.message()}")
@@ -79,27 +72,21 @@ fun signIn(email: String, password: String) {
     }
 }
 
-    fun getEmployees() {
+     fun getEmployees() {
         token?.let { authToken ->
             viewModelScope.launch {
                 isLoading.value = true
                 try {
-                    val response: Response<List<Employee>> = apiService.getEmployees("Bearer $authToken")
-                    if (response.isSuccessful) {
-                        employees.value = response.body() ?: emptyList()
+                    val response = apiService.getEmployees("Bearer $authToken")
+                    if (response.isNotEmpty()) {
+                        employees.value = response
                         errorMessage.value = ""
                         Log.d("KFHRViewModel", "Employees fetched successfully")
-                        Log.d("KFHRViewModel", "GetEmployees  ${response.code()}")
-
-                    } else {
-                        errorMessage.value = "Error fetching employees: ${response.message()}"
-                        Log.e("KFHRViewModel", "Error fetching employees: ${response.message()}")
-                        Log.d("KFHRViewModel", "GetEmployees  ${response.code()}")
 
                     }
                 } catch (e: Exception) {
                     errorMessage.value = "Error: ${e.message}"
-                    Log.e("KFHRViewModel", "Error: ${e.message}")
+                    Log.e("KFHRViewModel", "Error: $e")
                 } finally {
                     isLoading.value = false
                 }
@@ -168,12 +155,11 @@ fun signIn(email: String, password: String) {
         name = "Abdullah Bin Essa",
         password = "qwerty",
         email = "abdullah@example.com",
-        phone = "123456789",
-        dob = Date(),
-        gender = "Male",
+        dob = "",
+        gender = 1,
         profilePicURL = "https://example.com/profile.jpg",
         nfcIdNumber = 123,
-        positionId = 1,
+        positionId = 2,
         departmentId = 1,
         pointsEarned = 100,
         isAdmin = false

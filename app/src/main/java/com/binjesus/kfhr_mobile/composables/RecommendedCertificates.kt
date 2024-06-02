@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
+import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
@@ -73,7 +74,7 @@ fun RecommendedCertificatesScreen(navController: NavHostController,
                 }
             }
             FloatingActionButton(
-                onClick = { navController.navigate("MyCertificates") },
+                onClick = { navController.navigate(Route.MyCertificatesRoute) },
                 backgroundColor = Color(0xFF4CAF50),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)

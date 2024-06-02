@@ -152,25 +152,3 @@ fun NFCIdScreen(navController: NavHostController, employee: Employee) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun UserProfileScreenPreview() {
-    val employee = Employee(
-        id = 8332246,
-        name = "Abdullah Essa Bin Essa",
-        role = "Group Human Resources",
-        email = "abdullah@example.com",
-        phone = "123456789",
-        dob = Date(),
-        gender = "Male",
-        profilePicURL = "https://example.com/profile.jpg",
-        nfcIdNumber = 123,
-        positionId = 1,
-        departmentId = 1,
-        pointsEarned = 100
-    )
-
-    val navController = rememberNavController()
-
-    NFCIdScreen(navController = navController, employee = employee)
-}

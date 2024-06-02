@@ -45,7 +45,7 @@ fun ScreensNavHost(
                 val employee = Employee(
                     id = 8332246,
                     name = "Abdullah Essa Bin Essa",
-                    role = "Group Human Resources",
+                    password = "qwerty",
                     email = "abdullah@example.com",
                     phone = "123456789",
                     dob = Date(),
@@ -54,7 +54,8 @@ fun ScreensNavHost(
                     nfcIdNumber = 123,
                     positionId = 1,
                     departmentId = 1,
-                    pointsEarned = 100
+                    pointsEarned = 100,
+                    isAdmin = false
                 )
 
                 NFCIdScreen(navController = navController, employee = employee)

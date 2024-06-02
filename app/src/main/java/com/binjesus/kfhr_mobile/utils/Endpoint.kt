@@ -4,7 +4,7 @@ class Endpoint {
     companion object {
         const val baseUrl = "https://kfhrbackend20240528002909.azurewebsites.net/"
         const val sigInEndpoint = "api/Authentication/Login"
-        const val depositEndpoint = "deposit"
+        const val getEmployeesEndpoint = "api/User/Employees"
         const val authorization = "Authorization"
     }
 }

@@ -1,7 +1,9 @@
 package com.binjesus.kfhr_mobile.composables
 
+import android.app.DatePickerDialog
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,11 +36,10 @@ fun CertificateSubmissionScreen(navController: NavHostController,
     val context = LocalContext.current
 
     var certificateName by remember { mutableStateOf("") }
-    var issueDate by remember { mutableStateOf("") }
-    var expirationDate by remember { mutableStateOf("") }
+    var issueDate = remember { mutableStateOf("") }
+    var expirationDate = remember { mutableStateOf("") }
     var verificationURL by remember { mutableStateOf("") }
 
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     Scaffold(
         topBar = {
@@ -57,7 +58,7 @@ fun CertificateSubmissionScreen(navController: NavHostController,
                 )
                 IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
+                        painter = painterResource(id = R.drawable.bell),
                         contentDescription = "Notifications",
                         tint = Color.Black,
                         modifier = Modifier.size(28.dp)
@@ -95,24 +96,9 @@ fun CertificateSubmissionScreen(navController: NavHostController,
                             .padding(vertical = 8.dp),
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                     )
-                    OutlinedTextField(
-                        value = issueDate,
-                        onValueChange = { issueDate = it },
-                        label = { Text("Certificate Start") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-                    )
-                    OutlinedTextField(
-                        value = expirationDate,
-                        onValueChange = { expirationDate = it },
-                        label = { Text("Certificate Expiration") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-                    )
+                    DatePickerTextField(date=issueDate, title = "Certificate Start")
+                    DatePickerTextField(date=expirationDate, title = "Certificate Expiration")
+
                     OutlinedTextField(
                         value = verificationURL,
                         onValueChange = { verificationURL = it },
@@ -127,8 +113,10 @@ fun CertificateSubmissionScreen(navController: NavHostController,
             Button(
                 onClick = {
                     try {
-                        val issueDateParsed = dateFormat.parse(issueDate) ?: throw IllegalArgumentException("Invalid issue date")
-                        val expirationDateParsed = dateFormat.parse(expirationDate) ?: throw IllegalArgumentException("Invalid expiration date")
+                        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+                        val issueDateParsed = dateFormat.parse(issueDate.value) ?: throw IllegalArgumentException("Invalid issue date")
+                        val expirationDateParsed = dateFormat.parse(expirationDate.value) ?: throw IllegalArgumentException("Invalid expiration date")
                         val newCertificate = Certificate(
                             id = 0, // Replace with actual ID generation logic
                             employeeId = 1, // Replace with actual employee ID
@@ -154,7 +142,6 @@ fun CertificateSubmissionScreen(navController: NavHostController,
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

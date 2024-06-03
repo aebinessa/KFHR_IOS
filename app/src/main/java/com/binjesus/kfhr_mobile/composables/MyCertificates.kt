@@ -79,7 +79,7 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(
-                        bottom = 84.dp,
+                        bottom = 24.dp,
                         start = 16.dp
                     )
                     .size(150.dp, 50.dp)
@@ -92,7 +92,7 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(
-                        bottom = 74.dp,
+                        bottom = 24.dp,
                         end = 16.dp
                     )
                     .size(75.dp)

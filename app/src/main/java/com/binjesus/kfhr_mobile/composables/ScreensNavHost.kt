@@ -86,10 +86,14 @@ fun ScreensNavHost(
                 EmployeeDirectoryScreen(navController, viewModel)
             }
 
-            composable(Route.LeavesRoute) {
+            composable(Route.ApplyLeavesRoute) {
                 ApplyForLeaveScreen(navController, viewModel)
-
             }
+            composable(Route.MyLeavesRoute) {
+                MyLeavesScreen(navController, viewModel)
+            }
+
+
             composable(Route.RecommendedCertificatesRoute) {
                 viewModel.getRecommendedCertificates()
                 val context = LocalContext.current

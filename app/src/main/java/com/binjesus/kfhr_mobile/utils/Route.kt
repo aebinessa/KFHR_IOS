@@ -6,7 +6,7 @@ class Route {
         const val EmployeeDetailRoute = "EmployeeDetailRoute"
         const val NFCRoute = "NFCRoute"
         const val RecommendedCertificatesRoute = "RecommendedCertificatesRoute"
-        const val LeavesRoute = "LeavesRoute"
+        const val ApplyLeavesRoute = "LeavesRoute"
         const val DirectoryRoute = "DirectoryRoute"
         const val AttendanceRoute = "AttendanceRoute"
         const val NotificationsRoute = "NotificationsRoute"
@@ -16,6 +16,8 @@ class Route {
         const val ContactItRoute = "ContactItRoute"
         const val HomeRoute = "HomeRoute"
         const val WelcomeRoute = "WelcomeRoute"
+        const val MyLeavesRoute = "MyLeavesRoute"
+
 
     }
 }

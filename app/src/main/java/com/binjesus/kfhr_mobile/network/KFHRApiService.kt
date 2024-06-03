@@ -1,6 +1,7 @@
 package com.binjesus.kfhr_mobile.network
 
 import com.binjesus.kfhr_mobile.models.Employee
+import com.binjesus.kfhr_mobile.models.RecommendedCertificate
 import com.binjesus.kfhr_mobile.models.TokenResponse
 import com.binjesus.kfhr_mobile.models.requests.LeaveRequest
 import com.binjesus.kfhr_mobile.models.requests.LoginRequest
@@ -18,6 +19,9 @@ interface KFHRApiService {
 
     @GET(Endpoint.getEmployeesEndpoint)
     suspend fun getEmployees(@Header("Authorization") token: String): List<Employee>
+
+    @GET(Endpoint.getRecommendedCertificatesEndpoint)
+    suspend fun getRecommendedCertificates(@Header("Authorization") token: String): List<RecommendedCertificate>
 
 
     @POST("api/admin/leavesResponse")

@@ -148,12 +148,3 @@ fun RecommendedCertificateCard(certificate: RecommendedCertificate, onClick: () 
 
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewRecommendedCertificatesScreen() {
-//    val navController = rememberNavController()
-//
-//    RecommendedCertificatesScreen(navController) { certificate ->
-//        // Handle certificate click (navigate to detail screen)
-//    }
-//}

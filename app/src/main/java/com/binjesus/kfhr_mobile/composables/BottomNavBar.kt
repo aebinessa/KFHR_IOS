@@ -22,7 +22,7 @@ fun BottomNavBar(navController: NavController) {
     val items = listOf(
         BottomNavItem("HOME", R.drawable.home, Route.HomeRoute),
         BottomNavItem("ATTENDANCE", R.drawable.security, Route.AttendanceRoute),
-        BottomNavItem("LEAVES", R.drawable.document, Route.LeavesRoute),
+        BottomNavItem("LEAVES", R.drawable.document, Route.MyLeavesRoute),
         BottomNavItem("CERTS", R.drawable.onlinecertificate, Route.RecommendedCertificatesRoute),
         BottomNavItem("DIRECTORY", R.drawable.agenda, Route.DirectoryRoute)
     )

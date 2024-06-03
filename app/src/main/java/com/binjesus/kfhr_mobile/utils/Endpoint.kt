@@ -6,5 +6,6 @@ class Endpoint {
         const val sigInEndpoint = "api/Authentication/Login"
         const val getEmployeesEndpoint = "api/User/Employees"
         const val getRecommendedCertificatesEndpoint = "api/User/GetCertificates"
+        const val submitCertificateEndpoint = "api/User/SubmitCertificates"
     }
 }

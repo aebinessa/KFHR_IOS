@@ -1,5 +1,6 @@
 package com.binjesus.kfhr_mobile.viewmodel
 
+import android.icu.text.SimpleDateFormat
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,7 @@ import java.io.IOException
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 class KFHRViewModel : ViewModel() {
     private val apiService = RetrofitHelper.getInstance().create(KFHRApiService::class.java)
@@ -36,6 +38,8 @@ class KFHRViewModel : ViewModel() {
     val employees = mutableStateOf<List<Employee>>(emptyList())
     val isLoading = mutableStateOf(false)
     val errorMessage = mutableStateOf("")
+
+
 
 
 
@@ -123,22 +127,31 @@ fun signIn(email: String, password: String) {
 
 
     fun submitCertificate(newCertificate: Certificate) {
-        TODO("Not yet implemented")
+        token?.let { authToken ->
+            viewModelScope.launch {
+                isLoading.value = true
+                try {
+                    val response = apiService.submitCertificate("Bearer $authToken", newCertificate)
+                    if (response.isSuccessful) {
+                        certificates = certificates + newCertificate
+                        errorMessage.value = ""
+                        Log.d("KFHRViewModel", "Certificate submitted successfully")
+                    } else {
+                        errorMessage.value = "Submission failed: ${response.message()}"
+                        Log.e("KFHRViewModel", "Submission failed: ${response.message()}")
+                    }
+                } catch (e: Exception) {
+                    errorMessage.value = "Error: ${e.message}"
+                    Log.e("KFHRViewModel", "Error: $e")
+                } finally {
+                    isLoading.value = false
+                }
+            }
+        } ?: run {
+            errorMessage.value = "Error: Token is null"
+            Log.e("KFHRViewModel", "Error: Token is null")
+        }
     }
-
-//    fun fetchRecommendedCertificates() {
-//        recommendedCertificates = listOf()
-//    }
-
-//    fun fetchMyCertificates() {
-//        certificates = listOf(
-//            Certificate(1, 1, "Certificate 1", Date(), Date(), "https://example.com"),
-//            Certificate(2, 1, "Certificate 2", Date(), Date(), "https://example.com"),
-//            Certificate(3, 1, "Certificate 3", Date(), Date(), "https://example.com"),
-//            Certificate(4, 1, "Certificate 4", Date(), Date(), "https://example.com"),
-//            Certificate(5, 1, "Certificate 5", Date(), Date(), "https://example.com")
-//        )
-//    }
 
     fun fetchNotifications() {
         notifications = listOf(

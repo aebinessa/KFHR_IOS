@@ -7,36 +7,29 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.binjesus.kfhr_mobile.R
-import com.binjesus.kfhr_mobile.models.RecommendedCertificate
+import com.binjesus.kfhr_mobile.models.Certificate
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
-fun RecommendedCertificatesScreen(
-    navController: NavHostController,
-    viewModel: KFHRViewModel,
-    onCertificateClick: (RecommendedCertificate) -> Unit
-)
-{ Scaffold(
+fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = viewModel()) {
+    Scaffold(
         topBar = {
             Row(
                 modifier = Modifier
@@ -47,11 +40,16 @@ fun RecommendedCertificatesScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Recommended Certificates",
+                    text = "My Certificates",
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(
+                            top = 10.dp,
+                            end = 16.dp
+                        )
                 )
-                IconButton(onClick = { navController.navigate("Notifications") }) {
+                IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.bell),
                         contentDescription = "Notifications",
@@ -70,26 +68,39 @@ fun RecommendedCertificatesScreen(
                     .background(Color.White)
                     .padding(16.dp)
             ) {
-                items(viewModel.recommendedCertificates) { certificate ->
-                    RecommendedCertificateCard(certificate = certificate, onClick = { onCertificateClick(certificate) })
+                items(viewModel.certificates) { certificate ->
+                    CertificateCard(certificate = certificate)
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
+            Button(
+                onClick = { navController.popBackStack() },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(
+                        bottom = 84.dp,
+                        start = 16.dp
+                    )
+                    .size(150.dp, 50.dp)
+            ) {
+                Text("Recommended", color = Color.White)
+            }
             FloatingActionButton(
-                onClick = { navController.navigate(Route.MyCertificatesRoute) },
+                onClick = { navController.navigate(Route.SubmitCertificateRoute) },
                 backgroundColor = Color(0xFF4CAF50),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(
-                        bottom = 64.dp,
+                        bottom = 74.dp,
                         end = 16.dp
-                    ) // Adjust the padding to position the button above the bottom bar
+                    )
                     .size(75.dp)
                     .shadow(elevation = 20.dp, shape = CircleShape)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.certificate),
-                    contentDescription = "earned certificates",
+                    painter = painterResource(id = R.drawable.add),
+                    contentDescription = "Add",
                     tint = Color.Black,
                     modifier = Modifier.size(32.dp)
                 )
@@ -99,11 +110,11 @@ fun RecommendedCertificatesScreen(
 }
 
 @Composable
-fun RecommendedCertificateCard(certificate: RecommendedCertificate, onClick: () -> Unit) {
+fun CertificateCard(certificate: Certificate) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .clickable { /* Handle card click */ }
             .shadow(8.dp, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = 4.dp,
@@ -113,47 +124,37 @@ fun RecommendedCertificateCard(certificate: RecommendedCertificate, onClick: () 
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AsyncImage(
-                model = certificate.certificatePicture,
-                contentDescription = "Certificate Image",
-                placeholder = painterResource(R.drawable.warning),
-                error = painterResource(R.drawable.certificate),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = certificate.certificateName,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF4CAF50)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Issued by ${certificate.issuingOrganization}",
+                text = "Issue Date: ${certificate.issueDate}",
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+            Text(
+                text = "Expiration Date: ${certificate.expirationDate}",
                 fontSize = 14.sp,
                 color = Color.Gray
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Reward Points: ${certificate.rewardPoints}",
+                text = certificate.verificationURL,
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = Color.Blue,
+                modifier = Modifier.clickable { /* Handle URL click */ }
             )
         }
     }
 }
 
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewRecommendedCertificatesScreen() {
-//    val navController = rememberNavController()
-//
-//    RecommendedCertificatesScreen(navController) { certificate ->
-//        // Handle certificate click (navigate to detail screen)
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun CertificatesScreenPreview() {
+    val navController = rememberNavController()
+    MyCertificates(navController = navController, viewModel = viewModel())
+}

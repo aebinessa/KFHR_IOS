@@ -39,14 +39,14 @@ class KFHRViewModel : ViewModel() {
 
 
 
+
     // TODO convert to states employee, attendance, lateMinutesLeft
 
 
     // TODO remove init
     init {
         fetchNotifications()
-        fetchMyCertificates()
-        fetchRecommendedCertificates()
+
     }
 
 //
@@ -96,25 +96,49 @@ fun signIn(email: String, password: String) {
             Log.e("KFHRViewModel", "Error: Token is null")
         }
     }
+    fun getRecommendedCertificates() {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                isLoading.value = true
+                try {
+                    val response = apiService.getRecommendedCertificates("Bearer $authToken")
+                    if (response.isNotEmpty()) {
+                        recommendedCertificates = response
+                        errorMessage.value = ""
+                        Log.d("KFHRViewModel", "Employees fetched successfully")
+
+                    }
+                } catch (e: Exception) {
+                    errorMessage.value = "Error: ${e.message}"
+                    Log.e("KFHRViewModel", "Error: $e")
+                } finally {
+                    isLoading.value = false
+                }
+            }
+        } ?: run {
+            errorMessage.value = "Error: Token is null"
+            Log.e("KFHRViewModel", "Error: Token is null")
+        }
+    }
 
 
     fun submitCertificate(newCertificate: Certificate) {
         TODO("Not yet implemented")
     }
 
-    fun fetchRecommendedCertificates() {
-        recommendedCertificates = listOf()
-    }
+//    fun fetchRecommendedCertificates() {
+//        recommendedCertificates = listOf()
+//    }
 
-    fun fetchMyCertificates() {
-        certificates = listOf(
-            Certificate(1, 1, "Certificate 1", Date(), Date(), "https://example.com"),
-            Certificate(2, 1, "Certificate 2", Date(), Date(), "https://example.com"),
-            Certificate(3, 1, "Certificate 3", Date(), Date(), "https://example.com"),
-            Certificate(4, 1, "Certificate 4", Date(), Date(), "https://example.com"),
-            Certificate(5, 1, "Certificate 5", Date(), Date(), "https://example.com")
-        )
-    }
+//    fun fetchMyCertificates() {
+//        certificates = listOf(
+//            Certificate(1, 1, "Certificate 1", Date(), Date(), "https://example.com"),
+//            Certificate(2, 1, "Certificate 2", Date(), Date(), "https://example.com"),
+//            Certificate(3, 1, "Certificate 3", Date(), Date(), "https://example.com"),
+//            Certificate(4, 1, "Certificate 4", Date(), Date(), "https://example.com"),
+//            Certificate(5, 1, "Certificate 5", Date(), Date(), "https://example.com")
+//        )
+//    }
 
     fun fetchNotifications() {
         notifications = listOf(

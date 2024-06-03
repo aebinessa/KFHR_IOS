@@ -2,24 +2,21 @@ package com.binjesus.kfhr_mobile.composables
 
 import ApplyForLeaveScreen
 import HomeScreen
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.models.Employee
-import com.binjesus.kfhr_mobile.models.LateMinutesLeft
-import com.binjesus.kfhr_mobile.models.RecommendedCertificate
-import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
-import java.util.Calendar
-import java.util.Date
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.binjesus.kfhr_mobile.utils.Route
-import java.time.format.DateTimeFormatter
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
 fun ScreensNavHost(
@@ -66,7 +63,7 @@ fun ScreensNavHost(
             }
 
             composable(Route.MyCertificatesRoute) {
-                CertificatesApp(navController, viewModel)
+                MyCertificates(navController, viewModel)
             }
 
             composable(Route.SubmitCertificateRoute) {
@@ -94,15 +91,14 @@ fun ScreensNavHost(
 
             }
             composable(Route.RecommendedCertificatesRoute) {
+                viewModel.getRecommendedCertificates()
+                val context = LocalContext.current
                 RecommendedCertificatesScreen(
-                    navController,
-                    viewModel,
-                    onCertificateClick = { certificate ->
-                        // Handle certificate click (navigate to detail screen)
-                    },
-                    onViewAllClick = {
-                        // Handle view all click (navigate to view all certificates screen)
-                    })
+                    navController, viewModel
+                ) { certificate ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(certificate.organizationWebsite))
+                    context.startActivity(intent)
+                }
             }
 
         }

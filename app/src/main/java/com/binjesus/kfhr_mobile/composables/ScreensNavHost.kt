@@ -2,6 +2,7 @@ package com.binjesus.kfhr_mobile.composables
 
 import ApplyForLeaveScreen
 import HomeScreen
+import NFCIdScreen
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.padding

@@ -1,39 +1,59 @@
-package com.binjesus.kfhr_mobile.composables
-
+import android.app.Activity
+import android.content.Intent
+import android.nfc.NfcAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Employee
-import java.util.Date
 
 @Composable
-fun NFCIdScreen(navController: NavHostController, employee: Employee) {
+fun NFCIdScreen(navController: NavHostController, employee: Employee, nfcViewModel: NfcViewModel = viewModel()) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
+    var isNfcSupported by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
+        if (nfcAdapter == null) {
+            isNfcSupported = false
+        } else {
+            nfcViewModel.initializeNfc(nfcAdapter, context)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            activity?.let {
+                nfcViewModel.disableNfcForegroundDispatch(it as AppCompatActivity)
+            }
+        }
+    }
+
     Surface(
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             BoxWithConstraints(
                 modifier = Modifier
@@ -148,6 +168,13 @@ fun NFCIdScreen(navController: NavHostController, employee: Employee) {
                     .size(300.dp)  // Increased size of the KFH Logo image
                     .align(Alignment.CenterHorizontally)
             )
+        }
+
+        // Ensure NFC foreground dispatch is enabled when the screen is active
+        LaunchedEffect(Unit) {
+            activity?.let {
+                nfcViewModel.enableNfcForegroundDispatch(it as AppCompatActivity)
+            }
         }
     }
 }

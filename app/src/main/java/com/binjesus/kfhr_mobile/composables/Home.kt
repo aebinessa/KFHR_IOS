@@ -53,7 +53,7 @@ fun HomeScreen(navController: NavHostController,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Image(
-                        painter = rememberImagePainter(data = viewModel.employee.profilePicURL),
+                        painter = rememberImagePainter(data = viewModel.employee?.employeePic),
                         contentDescription = "Profile Picture",
                         modifier = Modifier
                             .size(70.dp)
@@ -73,18 +73,22 @@ fun HomeScreen(navController: NavHostController,
                             modifier = Modifier.padding(8.dp),
                             horizontalAlignment = Alignment.Start
                         ) {
-                            Text(
-                                text = viewModel.employee.name,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                            viewModel.employee?.let {
+                                it.employeeName?.let { it1 ->
+                                    Text(
+                                        text = it1,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.width(24.dp))
 
                     IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
+                            painter = painterResource(id = R.drawable.bell),
                             contentDescription = "Notifications",
                             tint = Color.Black,
                             modifier = Modifier.size(28.dp)

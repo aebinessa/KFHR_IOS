@@ -40,22 +40,8 @@ fun ScreensNavHost(
             startDestination = startDestination
         ) {
             composable(Route.NFCRoute) {
-                val employee = Employee(
-                    id = 8332246,
-                    name = "Abdullah Essa Bin Essa",
-                    password = "qwerty",
-                    email = "abdullah@example.com",
-                    dob = "",
-                    gender = 1,
-                    profilePicURL = "https://example.com/profile.jpg",
-                    nfcIdNumber = 123,
-                    positionId  = 1,
-                    departmentId = 1,
-                    pointsEarned = 100,
-                    isAdmin = false
-                )
 
-                NFCIdScreen(navController = navController, employee = employee)
+                NFCIdScreen(navController, viewModel)
             }
 
             composable(Route.EmployeeDetailRoute) {

@@ -17,18 +17,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
-import com.binjesus.kfhr_mobile.models.Employee
-import java.util.Date
+import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
-fun NFCIdScreen(navController: NavHostController, employee: Employee) {
+fun NFCIdScreen(navController: NavHostController, viewModel: KFHRViewModel) {
     Surface(
     ) {
         Column(
@@ -63,7 +62,7 @@ fun NFCIdScreen(navController: NavHostController, employee: Employee) {
 
                 // Notification button
                 IconButton(
-                    onClick = { /* Handle notification click */ },
+                    onClick = { navController.navigate(Route.NotificationsRoute)},
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(16.dp)
@@ -84,21 +83,17 @@ fun NFCIdScreen(navController: NavHostController, employee: Employee) {
                         .padding(top = 48.dp)
                 ) {
                     Text(
-                        text = employee.id.toString(),
+                        text = viewModel.employee?.employeeId.toString(),
                         color = Color.White,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Image(
-                        painter = rememberImagePainter(
-                            data = employee.profilePicURL.ifEmpty { "https://example.com/profile.jpg" }, // Hardcoded URL for testing
-                            builder = {
-                                placeholder(R.drawable.user)
-                                error(R.drawable.warning)
-                            }
-                        ),
+                    AsyncImage(
+                        model = viewModel.employee?.employeePic?.ifEmpty { "https://example.com/profile.jpg" },
                         contentDescription = "Profile Picture",
+                        placeholder = painterResource(R.drawable.user),
+                        error = painterResource(R.drawable.warning),
                         modifier = Modifier
                             .size(100.dp)
                             .clip(RoundedCornerShape(8.dp))
@@ -121,14 +116,16 @@ fun NFCIdScreen(navController: NavHostController, employee: Employee) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = employee.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
+                    viewModel.employee?.employeeName?.let {
+                        Text(
+                            text = it,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Group Human Resources",
+                        text = viewModel.employee?.employeeDepartmentId.toString(),
                         fontSize = 16.sp,
                         color = Color.Gray
                     )

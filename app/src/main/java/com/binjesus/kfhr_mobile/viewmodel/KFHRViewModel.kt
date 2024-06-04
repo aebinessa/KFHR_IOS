@@ -38,9 +38,7 @@ class KFHRViewModel : ViewModel() {
     val employees = mutableStateOf<List<Employee>>(emptyList())
     val isLoading = mutableStateOf(false)
     val errorMessage = mutableStateOf("")
-
-
-
+    var employee: TokenResponse? by mutableStateOf(null)
 
 
 
@@ -59,16 +57,15 @@ fun signIn(email: String, password: String) {
         try {
             val loginRequest = LoginRequest(email, password)
             val response: Response<TokenResponse> = apiService.signIn(loginRequest)
-
+            Log.e("HELLO", response.message())
+            Log.e("HELLO", response.isSuccessful.toString())
+            Log.e("HELLO", response.body()?.token!!)
             if (response.isSuccessful) {
-                token = response.body()?.token // Extract the token string
-                Log.d("KFHRViewModel", "Token received: $token")
-                Log.d("KFHRViewModel", "SignIn Status Code ${response.code()}")
+                employee = response.body()
+                token = employee?.token // Extract the token string
             } else {
                 errorMessage.value = "Login failed: ${response.message()}"
-                Log.e("KFHRViewModel", "Login failed: ${response.message()}")
             }
-
         } catch (e: Exception) {
             errorMessage.value = "Login error: ${e.message}"
             Log.e("KFHRViewModel", "Login error: ${e.message}")
@@ -187,20 +184,20 @@ fun signIn(email: String, password: String) {
         }
     }
 
-    val employee = Employee(
-        id = 1,
-        name = "Abdullah Bin Essa",
-        password = "qwerty",
-        email = "abdullah@example.com",
-        dob = "",
-        gender = 1,
-        profilePicURL = "https://example.com/profile.jpg",
-        nfcIdNumber = 123,
-        positionId = 2,
-        departmentId = 1,
-        pointsEarned = 100,
-        isAdmin = false
-    )
+//    val employee = Employee(
+//        id = 1,
+//        name = "Abdullah Bin Essa",
+//        password = "qwerty",
+//        email = "abdullah@example.com",
+//        dob = "",
+//        gender = 1,
+//        profilePicURL = "https://example.com/profile.jpg",
+//        nfcIdNumber = 123,
+//        positionId = 2,
+//        departmentId = 1,
+//        pointsEarned = 100,
+//        isAdmin = false
+//    )
     val attendance = Attendance(
         id = 1,
         employeeId = 1,

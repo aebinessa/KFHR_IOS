@@ -4,6 +4,7 @@ import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.models.Certificate
 import com.binjesus.kfhr_mobile.models.Employee
 import com.binjesus.kfhr_mobile.models.LateMinutesLeft
+import com.binjesus.kfhr_mobile.models.Leave
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
 import com.binjesus.kfhr_mobile.models.TokenResponse
 import com.binjesus.kfhr_mobile.models.requests.CheckInRequest
@@ -31,12 +32,17 @@ interface KFHRApiService {
     suspend fun checkIn(@Header("Authorization") token: String, @Body checkInRequest: CheckInRequest) : Response<Void>
     @POST(Endpoint.checkOutEndPoint)
     suspend fun checkOut(@Header("Authorization") token: String, @Body checkOutRequest: CheckOutRequest) : Response<Void>
-    @GET(Endpoint.getLeaveStatusEndpoint)
-    suspend fun getLeaveStatus(@Header("Authorization") token: String): LeaveStatusResponse
+    @GET(Endpoint.getLeaveEndpoint)
+    suspend fun getLeave(@Header("Authorization") token: String): List<Leave>
     @GET(Endpoint.getLateMinutesLeftEndpoint)
     suspend fun getLateMinutesLeft(@Header("Authorization") token: String) : LateMinutesLeft
     @GET(Endpoint.getAttendanceRecordEndpoint)
     suspend fun getAttendanceRecord(@Header("Authorization") token: String) : List<Attendance>
+    @GET(Endpoint.getTodayAttendanceEndpoint)
+    suspend fun getTodayAttendance(@Header("Authorization") token: String) : Attendance
+    @GET(Endpoint.getSubmittedCertificatesEndpoint)
+    suspend fun getSubmittedCertificates(@Header("Authorization") token: String) : List<Certificate>
+
     @POST(Endpoint.submitLeaveEndpoint)
-    suspend fun applyForLeave(@Body leaveRequest: LeaveRequest): Response<Void>
+    suspend fun applyForLeave(leave1: String, @Body leave: Leave): Response<Void>
 }

@@ -154,9 +154,4 @@ fun CertificateCard(certificate: Certificate) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CertificatesScreenPreview() {
-    val navController = rememberNavController()
-    MyCertificates(navController = navController, viewModel = viewModel())
-}
+

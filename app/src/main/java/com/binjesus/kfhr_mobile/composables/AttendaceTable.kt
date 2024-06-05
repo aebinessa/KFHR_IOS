@@ -25,7 +25,11 @@ import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 @Composable
 fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
@@ -45,17 +49,32 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Text(text = dateFormat.format(attendance.checkInDateTime), fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(text = dayOfWeekFormat.format(attendance.checkInDateTime), fontSize = 16.sp, color = Color.Gray)
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Check-in: ${timeFormat.format(attendance.checkInDateTime)}",
-                fontSize = 18.sp
+                text = attendance.employeeId.toString(),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
             )
-            Text(
-                text = "Check-out: ${attendance.checkOutDateTime?.let { timeFormat.format(it) } ?: "N/A"}",
-                fontSize = 18.sp
-            )
+            if (attendance.checkInDateTime != null) {
+                Text(
+                    text = dateFormat.format(attendance.checkInDateTime),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = dayOfWeekFormat.format(attendance.checkInDateTime),
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Check-in: ${timeFormat.format(attendance.checkInDateTime)}",
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = "Check-out: ${attendance.checkOutDateTime?.let { timeFormat.format(it) } ?: "N/A"}",
+                    fontSize = 18.sp
+                )
+            }
         }
     }
 }
@@ -86,17 +105,15 @@ fun AttendanceList(navController: NavHostController,
         val maxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         (1..maxDate).toList()
     }
+     val filteredAttendances by remember (selectedMonth, selectedYear, selectedDate) {
+        mutableStateOf(viewModel.attendances.filter { attendance: Attendance ->
+            val calAttendance = Calendar.getInstance().apply { time = attendance.checkInDateTimeObject() }
+            calAttendance.get(Calendar.YEAR) == selectedYear &&
+                    calAttendance.get(Calendar.MONTH) == selectedMonth &&
+                    (selectedDate == null || calAttendance.get(Calendar.DAY_OF_MONTH) == selectedDate)
+        })
 
-    val filteredAttendances by remember(selectedMonth, selectedYear, selectedDate) {
-        derivedStateOf {
-            viewModel.attendances.filter { attendance: Attendance ->
-                val calAttendance = Calendar.getInstance().apply { time = attendance.checkInDateTime }
-                calAttendance.get(Calendar.YEAR) == selectedYear &&
-                        calAttendance.get(Calendar.MONTH) == selectedMonth &&
-                        (selectedDate == null || calAttendance.get(Calendar.DAY_OF_MONTH) == selectedDate)
-            }
         }
-    }
 
         Column(
             modifier = Modifier
@@ -241,12 +258,12 @@ fun AttendanceList(navController: NavHostController,
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            if (filteredAttendances.isNotEmpty()) {
+            if (viewModel.attendances.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally // Center the list
                 ) {
-                    items(filteredAttendances) { attendance ->
+                    items(viewModel.attendances) { attendance ->
                         AttendanceRecord(attendance = attendance)
                     }
                 }

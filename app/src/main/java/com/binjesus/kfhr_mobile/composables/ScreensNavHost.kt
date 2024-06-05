@@ -1,6 +1,6 @@
 package com.binjesus.kfhr_mobile.composables
 
-import ApplyForLeaveScreen
+
 import HomeScreen
 import android.content.Intent
 import android.net.Uri
@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.binjesus.kfhr_mobile.models.Employee
+import com.binjesus.kfhr_mobile.ui.ApplyForLeaveScreen
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
@@ -49,10 +49,12 @@ fun ScreensNavHost(
             }
 
             composable(Route.MyCertificatesRoute) {
+                viewModel.getSubmittedCertificates()
                 MyCertificates(navController, viewModel)
             }
 
             composable(Route.SubmitCertificateRoute) {
+
                 CertificateSubmissionScreen(navController, viewModel)
             }
 
@@ -61,10 +63,12 @@ fun ScreensNavHost(
             }
 
             composable(Route.HomeRoute) {
+                viewModel.fetchLateMinutesLeft()
                 HomeScreen(navController, viewModel)
             }
 
             composable(Route.AttendanceRoute) {
+                viewModel.getAttendances()
                 AttendanceList(navController, viewModel)
             }
             composable(Route.DirectoryRoute) {
@@ -76,6 +80,7 @@ fun ScreensNavHost(
                 ApplyForLeaveScreen(navController, viewModel)
             }
             composable(Route.MyLeavesRoute) {
+                viewModel.fetchLeave()
                 MyLeavesScreen(navController, viewModel)
             }
 

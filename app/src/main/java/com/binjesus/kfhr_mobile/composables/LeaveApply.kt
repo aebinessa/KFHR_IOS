@@ -1,49 +1,42 @@
+package com.binjesus.kfhr_mobile.ui
+
 import android.app.DatePickerDialog
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-import kotlinx.coroutines.launch
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Leave
-import com.binjesus.kfhr_mobile.network.RetrofitHelper
-import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun ApplyForLeaveScreen(
     navController: NavHostController,
     viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    var employeeId by remember { mutableStateOf(0) }
     var leaveType by remember { mutableStateOf("") }
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
+    var status by remember { mutableStateOf("") }
 
-    val leaveTypes =
-        listOf("Sick Leave", "Casual Leave", "Maternity Leave", "Paternity Leave", "Annual Leave")
+    val leaveTypes = listOf("Sick Leave", "Casual Leave", "Maternity Leave", "Paternity Leave", "Annual Leave")
 
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     val context = LocalContext.current
@@ -71,8 +64,6 @@ fun ApplyForLeaveScreen(
         calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH)
     )
-
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -189,41 +180,35 @@ fun ApplyForLeaveScreen(
                     )
                 }
             }
-            if (errorMessage.isNotEmpty()) {
+            if (viewModel.errorMessage.value.isNotEmpty()) {
                 Text(
-                    text = errorMessage,
+                    text = viewModel.errorMessage.value,
                     color = Color.Red,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
 
-            if (viewModel.isLeaveRequestSuccessful) {
-                //TODO show message
-                isLoading = false
-            } else {
-                errorMessage = "Failed to apply for leave. Please try again."
-                isLoading = false
-            }
             Button(
                 onClick = {
-                    isLoading = true
-                    errorMessage = ""
-                    viewModel.applyForLeave(
-                        employeeId = employeeId,
-                        leaveType = leaveType,
-                        startDate = startDate,
+                    val newLeave = Leave(
+                        id = 0,
+                        employeeId = viewModel.employee!!.employeeId,
+                        leaveTypes = leaveType,
+                        startDate =startDate,
                         endDate = endDate,
-                        notes = notes
+                        notes = notes,
+                        status = status
                     )
+                    viewModel.applyForLeave(newLeave)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
                 shape = RoundedCornerShape(12.dp),
-                enabled = !isLoading
+                enabled = !viewModel.isLoading.value
             ) {
-                if (isLoading) {
+                if (viewModel.isLoading.value) {
                     CircularProgressIndicator(color = Color.White)
                 } else {
                     Text(
@@ -236,12 +221,4 @@ fun ApplyForLeaveScreen(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewApplyForLeaveScreen() {
-    val navController = rememberNavController() // Create a dummy NavHostController for preview
-    ApplyForLeaveScreen(navController)
-
 }

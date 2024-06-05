@@ -19,9 +19,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
-import com.binjesus.kfhr_mobile.models.Attendance
-import com.binjesus.kfhr_mobile.models.Employee
-import com.binjesus.kfhr_mobile.models.LateMinutesLeft
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
@@ -31,6 +28,7 @@ import java.util.*
 @Composable
 fun HomeScreen(navController: NavHostController,
                viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -107,7 +105,9 @@ fun HomeScreen(navController: NavHostController,
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        val timeLeft = calculateTimeLeft(viewModel.attendance.checkOutDateTime)
+                        var timeLeft = ""
+                        if (viewModel.attendance?.checkOutDateTime != null)
+                            timeLeft = calculateTimeLeft(viewModel.attendance?.checkOutDateTimeObject()!!)
                         Text(
                             text = timeLeft,
                             fontSize = 36.sp,
@@ -129,8 +129,8 @@ fun HomeScreen(navController: NavHostController,
                         .padding(8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    CheckInOutCard(time = viewModel.attendance.checkInDateTime, label = "Check In")
-                    CheckInOutCard(time = viewModel.attendance.checkOutDateTime, label = "Check Out")
+                    viewModel.attendance?.let { CheckInOutCard(time = it.checkInDateTimeObject(), label = "Check In") }
+                    viewModel.attendance?.let { CheckInOutCard(time = it.checkOutDateTimeObject(), label = "Check Out") }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -147,10 +147,10 @@ fun HomeScreen(navController: NavHostController,
                         Image(
                             painter = painterResource(id = R.drawable.clock), // Replace with actual image resource
                             contentDescription = "Clock",
-                            modifier = Modifier.size(40.dp) // Smaller size
+                            modifier = Modifier.size(60.dp) // Smaller size
                         )
                         Text(
-                            text = "Late Minutes Left : ${viewModel.lateMinutesLeft?.time}",
+                            text = "Late Minutes Left : ${viewModel.lateMinutesLeft?.minutesLeft}",
                             fontSize = 16.sp,
                             color = Color.Gray
                         )

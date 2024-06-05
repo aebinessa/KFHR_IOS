@@ -2,7 +2,7 @@ package com.binjesus.kfhr_mobile.models
 
 data class TokenResponse(
     val token: String?,
-    val employeeId: Int?,
+    val employeeId: Int,
     val employeeName: String?,
     val employeePic: String?,
     val employeeNfc: Int?,

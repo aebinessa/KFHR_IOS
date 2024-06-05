@@ -1,6 +1,5 @@
 package com.binjesus.kfhr_mobile.viewmodel
 
-import android.icu.text.SimpleDateFormat
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,21 +11,19 @@ import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.models.Certificate
 import com.binjesus.kfhr_mobile.models.Employee
 import com.binjesus.kfhr_mobile.models.LateMinutesLeft
+import com.binjesus.kfhr_mobile.models.Leave
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
 import com.binjesus.kfhr_mobile.models.TokenResponse
-import com.binjesus.kfhr_mobile.models.requests.LeaveRequest
 import com.binjesus.kfhr_mobile.models.requests.LoginRequest
 import com.binjesus.kfhr_mobile.network.KFHRApiService
 import com.binjesus.kfhr_mobile.network.RetrofitHelper
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
-import java.time.format.DateTimeFormatter
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class KFHRViewModel : ViewModel() {
+    val attendance: Attendance? by mutableStateOf(null)
     private val apiService = RetrofitHelper.getInstance().create(KFHRApiService::class.java)
     var token: String? by mutableStateOf(null)
     var showValidationError: Boolean by mutableStateOf(false)
@@ -40,34 +37,33 @@ class KFHRViewModel : ViewModel() {
     val errorMessage = mutableStateOf("")
     var employee: TokenResponse? by mutableStateOf(null)
     var attendances by mutableStateOf<List<Attendance>>(emptyList())
-    val lateMinutesLeft : LateMinutesLeft? by mutableStateOf(null)
+    var lateMinutesLeft: LateMinutesLeft? by mutableStateOf(null)
+    var submittedCertificates by mutableStateOf<List<Certificate>>(emptyList())
+    var leaves by mutableStateOf<List<Leave>>(emptyList())
+    var leave: Leave? by mutableStateOf(null)
 
-
-
-
-//
-fun signIn(email: String, password: String) {
-    viewModelScope.launch {
-        try {
-            val loginRequest = LoginRequest(email, password)
-            val response: Response<TokenResponse> = apiService.signIn(loginRequest)
-            Log.e("HELLO", response.message())
-            Log.e("HELLO", response.isSuccessful.toString())
-            Log.e("HELLO", response.body()?.token!!)
-            if (response.isSuccessful) {
-                employee = response.body()
-                token = employee?.token // Extract the token string
-            } else {
-                errorMessage.value = "Login failed: ${response.message()}"
+    fun signIn(email: String, password: String) {
+        viewModelScope.launch {
+            try {
+                val loginRequest = LoginRequest(email, password)
+                val response: Response<TokenResponse> = apiService.signIn(loginRequest)
+                Log.e("HELLO", response.message())
+                Log.e("HELLO", response.isSuccessful.toString())
+                Log.e("HELLO", response.body()?.token!!)
+                if (response.isSuccessful) {
+                    employee = response.body()
+                    token = employee?.token // Extract the token string
+                } else {
+                    errorMessage.value = "Login failed: ${response.message()}"
+                }
+            } catch (e: Exception) {
+                errorMessage.value = "Login error: ${e.message}"
+                Log.e("KFHRViewModel", "Login error: ${e.message}")
             }
-        } catch (e: Exception) {
-            errorMessage.value = "Login error: ${e.message}"
-            Log.e("KFHRViewModel", "Login error: ${e.message}")
         }
     }
-}
 
-     fun getEmployees() {
+    fun getEmployees() {
         token?.let { authToken ->
             viewModelScope.launch {
                 isLoading.value = true
@@ -91,6 +87,7 @@ fun signIn(email: String, password: String) {
             Log.e("KFHRViewModel", "Error: Token is null")
         }
     }
+
     fun getRecommendedCertificates() {
         token?.let { authToken ->
             viewModelScope.launch {
@@ -103,6 +100,73 @@ fun signIn(email: String, password: String) {
                         Log.d("KFHRViewModel", "Employees fetched successfully")
 
                     }
+                } catch (e: Exception) {
+                    errorMessage.value = "Error: ${e.message}"
+                    Log.e("KFHRViewModel", "Error: $e")
+                } finally {
+                    isLoading.value = false
+                }
+            }
+        } ?: run {
+            errorMessage.value = "Error: Token is null"
+            Log.e("KFHRViewModel", "Error: Token is null")
+        }
+    }
+
+    fun getSubmittedCertificates() {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                isLoading.value = true
+                try {
+                    val response = apiService.getSubmittedCertificates("Bearer $authToken")
+                    if (response.isNotEmpty()) {
+                        submittedCertificates = response
+                        errorMessage.value = ""
+                        Log.d("KFHRViewModel", "Employees fetched successfully")
+
+                    }
+                } catch (e: Exception) {
+                    errorMessage.value = "Error: ${e.message}"
+                    Log.e("KFHRViewModel", "Error: $e")
+                } finally {
+                    isLoading.value = false
+                }
+            }
+        } ?: run {
+            errorMessage.value = "Error: Token is null"
+            Log.e("KFHRViewModel", "Error: Token is null")
+        }
+    }
+    fun fetchLateMinutesLeft() {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                isLoading.value = true
+                try {
+                    val response = apiService.getLateMinutesLeft("Bearer $authToken")
+                    lateMinutesLeft = response
+                    errorMessage.value = ""
+                    Log.d("KFHRViewModel", "Late minutes fetched successfully")
+                } catch (e: Exception) {
+                    errorMessage.value = "Error: ${e.message}"
+                    Log.e("KFHRViewModel", "Error: $e")
+                } finally {
+                    isLoading.value = false
+                }
+            }
+        } ?: run {
+            errorMessage.value = "Error: Token is null"
+            Log.e("KFHRViewModel", "Error: Token is null")
+        }
+    }
+    fun fetchLeave() {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                isLoading.value = true
+                try {
+                    val response = apiService.getLeave("Bearer $authToken")
+                    leaves = response
+                    errorMessage.value = ""
+                    Log.d("KFHRViewModel", "Leave  fetched successfully")
                 } catch (e: Exception) {
                     errorMessage.value = "Error: ${e.message}"
                     Log.e("KFHRViewModel", "Error: $e")
@@ -143,6 +207,31 @@ fun signIn(email: String, password: String) {
             Log.e("KFHRViewModel", "Error: Token is null")
         }
     }
+    fun applyForLeave(newLeave :Leave
+    ) {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                isLoading.value = true
+                try {
+                    val response: Response<Void> =
+                        apiService.applyForLeave("Bearer $authToken", newLeave)
+                    isLeaveRequestSuccessful = response.isSuccessful
+                    if (!response.isSuccessful) {
+                        leaves += newLeave
+                        errorMessage.value = "Failed to apply for leave. Please try again."
+                    }
+                } catch (e: HttpException) {
+                    errorMessage.value = "HTTP error: ${e.message}"
+                } catch (e: IOException) {
+                    errorMessage.value = "Network error: ${e.message}"
+                } finally {
+                    isLoading.value = false
+                }
+            }
+        }
+
+    }
+
     fun getAttendances() {
         token?.let { authToken ->
             viewModelScope.launch {
@@ -182,32 +271,9 @@ fun signIn(email: String, password: String) {
         )
     }
 
-    fun applyForLeave(
-        employeeId: Int,
-        leaveType: String,
-        startDate: String,
-        endDate: String,
-        notes: String
-    ) {
-        viewModelScope.launch {
-            try {
-                val leaveRequest = LeaveRequest(employeeId, leaveType, startDate, endDate, notes)
-                val response = apiService.applyForLeave(leaveRequest)
-                isLeaveRequestSuccessful = response.isSuccessful
-            } catch (e: retrofit2.HttpException) {
 
-            } catch (e: IOException) {
 
-            }
-        }
-    }
 
-    val attendance = Attendance(
-        id = 1,
-        employeeId = 1,
-        checkInDateTime = Date(),
-        checkOutDateTime = Date(Date().time + 3600000) // 1 hour later
-    )
     // TODO remove init
     init {
         fetchNotifications()

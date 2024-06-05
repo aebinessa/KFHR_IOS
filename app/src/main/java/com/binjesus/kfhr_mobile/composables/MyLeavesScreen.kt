@@ -3,6 +3,7 @@ package com.binjesus.kfhr_mobile.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.binjesus.kfhr_mobile.models.Leave
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
@@ -26,12 +28,6 @@ fun MyLeavesScreen(
     navController: NavHostController,
     viewModel: KFHRViewModel
 ) {
-    val leaveApplications = listOf(
-        Triple("Wed, 16 Dec", "Casual", "Awaiting"),
-        Triple("Mon, 16 Nov", "Sick", "Approved"),
-        Triple("Mon, 22 Nov - Fri, 25 Nov", "Casual", "Declined"),
-        Triple("Thu, 01 Nov", "Sick", "Approved")
-    )
 
     var selectedFilter by remember { mutableStateOf("All") }
     val filterOptions = listOf("All", "Casual", "Sick", "Awaiting", "Approved", "Declined")
@@ -82,10 +78,7 @@ fun MyLeavesScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                LeaveApplicationsList(
-                    leaveApplications = leaveApplications.filter {
-                        selectedFilter == "All" || it.second == selectedFilter || it.third == selectedFilter
-                    }
+                LeaveApplicationsList(viewModel.leaves
                 )
             }
         }
@@ -118,16 +111,16 @@ fun FilterDropdown(
 }
 
 @Composable
-fun LeaveApplicationsList(leaveApplications: List<Triple<String, String, String>>) {
+fun LeaveApplicationsList(leaveApplications: List<Leave>) {
     LazyColumn {
-        items(leaveApplications.size) { index ->
-            LeaveApplicationItem(leaveApplications[index])
+        items(leaveApplications) {
+            LeaveApplicationItem(it)
         }
     }
 }
 
 @Composable
-fun LeaveApplicationItem(application: Triple<String, String, String>) {
+fun LeaveApplicationItem(leave: Leave) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -136,15 +129,15 @@ fun LeaveApplicationItem(application: Triple<String, String, String>) {
         elevation = 8.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(application.first, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(leave.startDate.toString(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(application.second, color = Color(16, 89, 179))
+            Text(leave.leaveTypes.toString(), color = Color(16, 89, 179))
             Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(application.third, color = when (application.third) {
+                Text(leave.status!!, color = when (leave.status) {
                     "Approved" -> Color.Green
                     "Declined" -> Color.Red
                     "Awaiting" -> Color.Gray
@@ -155,12 +148,3 @@ fun LeaveApplicationItem(application: Triple<String, String, String>) {
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun LeaveApplicationsScreenPreview() {
-//    val navController = rememberNavController()
-//    MyLeavesScreen(navController = navController) {
-//        // Handle add click
-//    }
-//}

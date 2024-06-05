@@ -1,9 +1,8 @@
 package com.binjesus.kfhr_mobile.composables
 
-import android.app.DatePickerDialog
+import android.text.format.DateUtils
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,16 +15,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Certificate
 import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.utils.convertDateToString
+import com.binjesus.kfhr_mobile.utils.convertStringToDate
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,6 +39,9 @@ fun CertificateSubmissionScreen(navController: NavHostController,
     var expirationDate = remember { mutableStateOf("") }
     var verificationURL by remember { mutableStateOf("") }
 
+    if (viewModel.isLoading.value) {
+        Toast.makeText(context, "Certificate submitted successfully", Toast.LENGTH_SHORT).show()
+    }
 
     Scaffold(
         topBar = {
@@ -112,24 +114,19 @@ fun CertificateSubmissionScreen(navController: NavHostController,
             }
             Button(
                 onClick = {
-                    try {
                         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
                         val issueDateParsed = dateFormat.parse(issueDate.value) ?: throw IllegalArgumentException("Invalid issue date")
                         val expirationDateParsed = dateFormat.parse(expirationDate.value) ?: throw IllegalArgumentException("Invalid expiration date")
                         val newCertificate = Certificate(
-                            id = 0, // Replace with actual ID generation logic
-                            employeeId = 1, // Replace with actual employee ID
+                            id = 0,
+                            employeeId = viewModel.employee!!.employeeId, // Replace with actual employee ID
                             certificateName = certificateName,
-                            issueDate = issueDateParsed,
-                            expirationDate = expirationDateParsed,
+                            issueDate = convertDateToString(issueDateParsed),
+                            expirationDate = convertDateToString(expirationDateParsed),
                             verificationURL = verificationURL
                         )
                         viewModel.submitCertificate(newCertificate)
-                        Toast.makeText(context, "Certificate submitted successfully", Toast.LENGTH_SHORT).show()
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

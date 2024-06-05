@@ -25,6 +25,8 @@ import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Certificate
 import com.binjesus.kfhr_mobile.utils.Route
+import androidx.compose.runtime.collectAsState
+
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable

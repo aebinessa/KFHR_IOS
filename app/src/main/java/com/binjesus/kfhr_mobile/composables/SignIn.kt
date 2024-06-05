@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -85,6 +86,7 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
             onValueChange = { email = it },
             shape = RoundedCornerShape(14.dp),
             label = { Text(text = "Email") },
+            textStyle = TextStyle(color = Color.Black),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
@@ -95,6 +97,7 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
             onValueChange = { password = it },
             shape = RoundedCornerShape(14.dp),
             label = { Text(text = "Password") },
+            textStyle = TextStyle(color = Color.Black),
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()

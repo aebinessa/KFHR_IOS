@@ -150,7 +150,7 @@ fun HomeScreen(navController: NavHostController,
                             modifier = Modifier.size(40.dp) // Smaller size
                         )
                         Text(
-                            text = "Late Minutes Left : ${viewModel.lateMinutesLeft.time}",
+                            text = "Late Minutes Left : ${viewModel.lateMinutesLeft?.time}",
                             fontSize = 16.sp,
                             color = Color.Gray
                         )

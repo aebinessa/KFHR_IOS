@@ -39,17 +39,11 @@ class KFHRViewModel : ViewModel() {
     val isLoading = mutableStateOf(false)
     val errorMessage = mutableStateOf("")
     var employee: TokenResponse? by mutableStateOf(null)
+    var attendances by mutableStateOf<List<Attendance>>(emptyList())
+    val lateMinutesLeft : LateMinutesLeft? by mutableStateOf(null)
 
 
 
-    // TODO convert to states employee, attendance, lateMinutesLeft
-
-
-    // TODO remove init
-    init {
-        fetchNotifications()
-
-    }
 
 //
 fun signIn(email: String, password: String) {
@@ -149,6 +143,30 @@ fun signIn(email: String, password: String) {
             Log.e("KFHRViewModel", "Error: Token is null")
         }
     }
+    fun getAttendances() {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                isLoading.value = true
+                try {
+                    val response = apiService.getAttendanceRecord("Bearer $authToken")
+                    if (response.isNotEmpty()) {
+                        attendances = response
+                        errorMessage.value = ""
+                        Log.d("KFHRViewModel", "Attendances fetched successfully")
+                    }
+                } catch (e: Exception) {
+                    errorMessage.value = "Error: ${e.message}"
+                    Log.e("KFHRViewModel", "Error: $e")
+                } finally {
+                    isLoading.value = false
+                }
+            }
+        } ?: run {
+            errorMessage.value = "Error: Token is null"
+            Log.e("KFHRViewModel", "Error: Token is null")
+        }
+    }
+
 
     fun fetchNotifications() {
         notifications = listOf(
@@ -184,65 +202,18 @@ fun signIn(email: String, password: String) {
         }
     }
 
-//    val employee = Employee(
-//        id = 1,
-//        name = "Abdullah Bin Essa",
-//        password = "qwerty",
-//        email = "abdullah@example.com",
-//        dob = "",
-//        gender = 1,
-//        profilePicURL = "https://example.com/profile.jpg",
-//        nfcIdNumber = 123,
-//        positionId = 2,
-//        departmentId = 1,
-//        pointsEarned = 100,
-//        isAdmin = false
-//    )
     val attendance = Attendance(
         id = 1,
         employeeId = 1,
         checkInDateTime = Date(),
         checkOutDateTime = Date(Date().time + 3600000) // 1 hour later
     )
-    val lateMinutesLeft = LateMinutesLeft(
-        id = 1,
-        employeeId = 1,
-        time = 27,
-        month = Date()
-    )
+    // TODO remove init
+    init {
+        fetchNotifications()
 
-    val attendances = listOf(
-        Attendance(
-            id = 1,
-            employeeId = 101,
-            checkInDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 1, 8, 30)
-            }.time,
-            checkOutDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 1, 17, 0)
-            }.time
-        ),
-        Attendance(
-            id = 2,
-            employeeId = 101,
-            checkInDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 2, 8, 45)
-            }.time,
-            checkOutDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 2, 17, 15)
-            }.time
-        ),
-        Attendance(
-            id = 3,
-            employeeId = 101,
-            checkInDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 3, 9, 0)
-            }.time,
-            checkOutDateTime = Calendar.getInstance().apply {
-                set(2023, Calendar.MAY, 3, 18, 0)
-            }.time
-        )
-    )
+    }
+
 }
 
 

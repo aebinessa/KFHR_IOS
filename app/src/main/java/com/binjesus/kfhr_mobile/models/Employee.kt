@@ -9,7 +9,7 @@ data class Employee(
     val password: String,
     val email: String,
     val dob: String,
-    val gender: Int,
+    val gender: String,
     val profilePicURL: String,
     val nfcIdNumber: Int,
     val positionId: Int,

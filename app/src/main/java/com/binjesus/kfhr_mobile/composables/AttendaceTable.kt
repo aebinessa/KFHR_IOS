@@ -64,8 +64,8 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
 @Composable
 fun AttendanceList(navController: NavHostController,
                    viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
-    var selectedMonth by remember { mutableStateOf(Calendar.getInstance().get(Calendar.MONTH)) }
-    var selectedYear by remember { mutableStateOf(Calendar.getInstance().get(Calendar.YEAR)) }
+    var selectedMonth by remember { mutableIntStateOf(Calendar.getInstance().get(Calendar.MONTH)) }
+    var selectedYear by remember { mutableIntStateOf(Calendar.getInstance().get(Calendar.YEAR)) }
     var selectedDate: Int? by remember { mutableStateOf(null) }
     var monthExpanded by remember { mutableStateOf(false) }
     var yearExpanded by remember { mutableStateOf(false) }
@@ -89,7 +89,7 @@ fun AttendanceList(navController: NavHostController,
 
     val filteredAttendances by remember(selectedMonth, selectedYear, selectedDate) {
         derivedStateOf {
-            viewModel.attendances.filter { attendance ->
+            viewModel.attendances.filter { attendance: Attendance ->
                 val calAttendance = Calendar.getInstance().apply { time = attendance.checkInDateTime }
                 calAttendance.get(Calendar.YEAR) == selectedYear &&
                         calAttendance.get(Calendar.MONTH) == selectedMonth &&
@@ -101,7 +101,7 @@ fun AttendanceList(navController: NavHostController,
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                //.padding(16.dp)
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top

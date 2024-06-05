@@ -1,5 +1,6 @@
 package com.binjesus.kfhr_mobile.network
 
+import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.models.Certificate
 import com.binjesus.kfhr_mobile.models.Employee
 import com.binjesus.kfhr_mobile.models.LateMinutesLeft
@@ -34,6 +35,8 @@ interface KFHRApiService {
     suspend fun getLeaveStatus(@Header("Authorization") token: String): LeaveStatusResponse
     @GET(Endpoint.getLateMinutesLeftEndpoint)
     suspend fun getLateMinutesLeft(@Header("Authorization") token: String) : LateMinutesLeft
+    @GET(Endpoint.getAttendanceRecordEndpoint)
+    suspend fun getAttendanceRecord(@Header("Authorization") token: String) : List<Attendance>
     @POST(Endpoint.submitLeaveEndpoint)
     suspend fun applyForLeave(@Body leaveRequest: LeaveRequest): Response<Void>
 }

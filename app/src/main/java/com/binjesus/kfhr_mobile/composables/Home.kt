@@ -26,152 +26,167 @@ import java.util.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(navController: NavHostController,
-               viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun HomeScreen(
+    navController: NavHostController,
+    viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
 
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+            Spacer(modifier = Modifier.height(12.dp))
+
+           HomeTopBar(viewModel = viewModel, navController = navController)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                elevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Image(
-                        painter = rememberImagePainter(data = viewModel.employee?.employeePic),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier
-                            .size(70.dp)
-                            .background(Color.Gray, shape = CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Card(
-                        shape = RoundedCornerShape(8.dp),
-                        elevation = 4.dp,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 6.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            viewModel.employee?.let {
-                                it.employeeName?.let { it1 ->
-                                    Text(
-                                        text = it1,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(24.dp))
-
-                    IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.bell),
-                            contentDescription = "Notifications",
-                            tint = Color.Black,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(
-                    shape = RoundedCornerShape(8.dp),
-                    elevation = 4.dp,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        var timeLeft = ""
-                        if (viewModel.attendance?.checkOutDateTime != null)
-                            timeLeft = calculateTimeLeft(viewModel.attendance?.checkOutDateTimeObject()!!)
-                        Text(
-                            text = timeLeft,
-                            fontSize = 36.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "Time left till check out",
-                            fontSize = 16.sp,
-                            color = Color.Gray
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    viewModel.attendance?.let { CheckInOutCard(time = it.checkInDateTimeObject(), label = "Check In") }
-                    viewModel.attendance?.let { CheckInOutCard(time = it.checkOutDateTimeObject(), label = "Check Out") }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(
-                    shape = RoundedCornerShape(8.dp),
-                    elevation = 4.dp,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.clock), // Replace with actual image resource
-                            contentDescription = "Clock",
-                            modifier = Modifier.size(60.dp) // Smaller size
-                        )
-                        Text(
-                            text = "Late Minutes Left : ${viewModel.lateMinutesLeft?.minutesLeft}",
-                            fontSize = 16.sp,
-                            color = Color.Gray
-                        )
+                    var timeLeft = ""
+                    var isCheckout = viewModel.attendance?.checkOutDateTime
+                    var timeLeftTitle = "Please check in to see time left"
+                    if (isCheckout != null) {
+                        timeLeft =
+                            calculateTimeLeft(viewModel.attendance?.checkOutDateTimeObject()!!)
+                        timeLeftTitle = "Time left till check out"
                     }
+
+                    Text(
+                        text = timeLeft,
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = timeLeftTitle,
+                        fontSize = 16.sp,
+                        color = Color.Gray
+                    )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            NFCNav(
-                navController = navController,
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd) // Align to the bottom right
-                    .padding(16.dp) // Add padding from the edges
-            )
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                var checkInTime = "--:--"
+                var checkOutTime = "--:--"
+                if (viewModel.attendance != null) {
+                    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    checkInTime = timeFormat.format(viewModel.attendance!!.checkInDateTimeObject())
+                    checkOutTime = timeFormat.format(viewModel.attendance!!.checkOutDateTimeObject())
+
+                }
+
+                    CheckInOutCard(
+                        time = checkInTime,
+                        label = "Check In"
+                    )
+
+                    CheckInOutCard(
+                        time = checkOutTime,
+                        label = "Check Out"
+                    )
+
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                elevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.clock), // Replace with actual image resource
+                        contentDescription = "Clock",
+                        modifier = Modifier.size(60.dp) // Smaller size
+                    )
+                    Text(
+                        text = "Late Minutes Left : ${viewModel.lateMinutesLeft?.minutesLeft}",
+                        fontSize = 16.sp,
+                        color = Color.Gray
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
         }
+
+        NFCFABButton(
+            navController = navController,
+            modifier = Modifier
+                .align(Alignment.BottomEnd) // Align to the bottom right
+                .padding(16.dp) // Add padding from the edges
+        )
+    }
 }
 
 @Composable
-fun CheckInOutCard(time: Date, label: String) {
-    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-    val formattedTime = timeFormat.format(time)
+fun HomeTopBar(viewModel: KFHRViewModel, navController: NavHostController) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Image(
+            painter = rememberImagePainter(data = viewModel.employee?.employeePic),
+            contentDescription = "Profile Picture",
+            modifier = Modifier
+                .size(70.dp)
+                .background(Color.Gray, shape = CircleShape),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        var name = ""
+        if (viewModel.employee?.employeeName != null) {
+            name = viewModel.employee?.employeeName!!
+        }
+        Text(
+            text = name,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.width(24.dp))
+
+        IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
+            Icon(
+                painter = painterResource(id = R.drawable.bell),
+                contentDescription = "Notifications",
+                tint = Color.Black,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun CheckInOutCard(time: String, label: String) {
     Card(
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp,
@@ -185,7 +200,7 @@ fun CheckInOutCard(time: Date, label: String) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = formattedTime,
+                text = time,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )

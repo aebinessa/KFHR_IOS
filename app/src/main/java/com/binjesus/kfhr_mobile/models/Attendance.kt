@@ -8,23 +8,23 @@ import java.util.Date
 data class Attendance(
     val id: Int,
     val employeeId: Int,
-    val checkInDateTime: String?,
-    val checkOutDateTime: String?
+    val checkInTime: String?,
+    val checkOutTime: String?
 ) {
 
     fun checkInDateTimeObject(): Date {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
         // Parse the date string to LocalDateTime
-        val localDateTime = LocalDateTime.parse(checkInDateTime, formatter)
+        val localDateTime = LocalDateTime.parse(checkInTime, formatter)
 
         // Convert LocalDateTime to Date
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())
     }
 
     fun checkOutDateTimeObject(): Date {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
         // Parse the date string to LocalDateTime
-        val localDateTime = LocalDateTime.parse(checkOutDateTime, formatter)
+        val localDateTime = LocalDateTime.parse(checkOutTime, formatter)
 
         // Convert LocalDateTime to Date
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())

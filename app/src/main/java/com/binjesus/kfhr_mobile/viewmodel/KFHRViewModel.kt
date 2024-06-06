@@ -24,7 +24,7 @@ import retrofit2.Response
 import java.io.IOException
 
 class KFHRViewModel : ViewModel() {
-    val attendance: Attendance? by mutableStateOf(null)
+    var attendance: Attendance? by mutableStateOf(null)
     private val apiService = RetrofitHelper.getInstance().create(KFHRApiService::class.java)
     var token: String? by mutableStateOf(null)
     var showValidationError: Boolean by mutableStateOf(false)
@@ -138,13 +138,14 @@ class KFHRViewModel : ViewModel() {
             Log.e("KFHRViewModel", "Error: Token is null")
         }
     }
+
     fun fetchLateMinutesLeft() {
         token?.let { authToken ->
             viewModelScope.launch {
                 isLoading.value = true
                 try {
                     val response = apiService.getLateMinutesLeft("Bearer $authToken")
-                    lateMinutesLeft = response
+                    lateMinutesLeft = response.body()
                     errorMessage.value = ""
                     Log.d("KFHRViewModel", "Late minutes fetched successfully")
                 } catch (e: Exception) {
@@ -159,6 +160,7 @@ class KFHRViewModel : ViewModel() {
             Log.e("KFHRViewModel", "Error: Token is null")
         }
     }
+
     fun fetchLeave() {
         token?.let { authToken ->
             viewModelScope.launch {
@@ -208,12 +210,14 @@ class KFHRViewModel : ViewModel() {
             Log.e("KFHRViewModel", "Error: Token is null")
         }
     }
+
     fun applyForLeave(newLeave: LeaveRequest) {
         token?.let { authToken ->
             viewModelScope.launch {
                 isLoading.value = true
                 try {
-                    val response: Response<Void> = apiService.applyForLeave("Bearer $authToken", newLeave)
+                    val response: Response<Void> =
+                        apiService.applyForLeave("Bearer $authToken", newLeave)
                     Log.d("ApplyForLeave", "Received response: ${response.message()}")
                     Log.d("ApplyForLeave", "Received response: ${response.code()}")
 
@@ -263,6 +267,13 @@ class KFHRViewModel : ViewModel() {
         }
     }
 
+    fun getTodayAttendance() {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                attendance = apiService.getTodayAttendance("Bearer $authToken").body()
+            }
+        }
+    }
 
     fun fetchNotifications() {
         notifications = listOf(
@@ -277,8 +288,6 @@ class KFHRViewModel : ViewModel() {
             // Add more notifications as needed
         )
     }
-
-
 
 
     // TODO remove init

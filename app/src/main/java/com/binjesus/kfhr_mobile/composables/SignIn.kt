@@ -165,7 +165,7 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(top = 8.dp)
-                .clickable { navController.navigate("ContactIT") }
+                .clickable { navController.navigate(Route.ContactItRoute) }
         )
     }
 }

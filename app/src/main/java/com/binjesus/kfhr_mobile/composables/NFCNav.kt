@@ -1,7 +1,6 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -21,7 +20,7 @@ import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.utils.Route
 
 @Composable
-fun NFCNav(navController: NavController, modifier: Modifier = Modifier) {
+fun NFCFABButton(navController: NavController, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .size(50.dp)
@@ -46,6 +45,6 @@ fun NFCNav(navController: NavController, modifier: Modifier = Modifier) {
 private fun NFCNavPreview() {
     val navController = rememberNavController()
     Surface {
-        NFCNav(navController = navController)
+        NFCFABButton(navController = navController)
     }
 }

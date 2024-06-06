@@ -2,27 +2,12 @@ package com.binjesus.kfhr_mobile.composables
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,23 +15,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
 data class ITEmployee(
     val name: String,
     val phoneNumber: String,
     val email: String
 )
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactItScreen(navController: NavHostController) {
     val employees = listOf(
-        ITEmployee("jacqueline salford", "+9665435678", "jacquelinesalford@abcd.com"),
-        ITEmployee("Elon Tusk", "+9655643567", "ElonTusk@abcd.com"),
-        ITEmployee("Abigail", "+9656345768765", "Abigail@abcd.com")
+        ITEmployee("Jacqueline Salford", "+9665435678", "jacquelinesalford@abcd.com"),
+        ITEmployee("Elon Tusk", "+9655643567", "elontusk@abcd.com"),
+        ITEmployee("Abigail", "+9656345768765", "abigail@abcd.com")
     )
 
     Scaffold(
@@ -103,27 +91,42 @@ fun ContactItScreen(navController: NavHostController) {
 @Composable
 fun EmployeeCard(employee: ITEmployee) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF078544)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "Officer: ${employee.name}", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
-            Text(text = "Phone Number: ${employee.phoneNumber}", fontSize = 14.sp, color = Color.White)
+            Text(
+                text = "Officer: ${employee.name}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = Color.White
+            )
+            Text(
+                text = "Phone Number: ${employee.phoneNumber}",
+                fontSize = 16.sp,
+                color = Color.White
+            )
             ClickableText(
                 text = AnnotatedString(employee.email),
                 onClick = { /* Handle email click */ },
-                style = LocalTextStyle.current.copy(color = Color(0xFFBBDEFB), fontSize = 14.sp)
+                style = LocalTextStyle.current.copy(
+                    color = Color(0xFFBBDEFB),
+                    fontSize = 16.sp
+                )
             )
         }
     }
 }
 
-/*@Composable
+@Composable
 @Preview(showBackground = true)
 fun PreviewITContactScreen() {
-    ITContactScreen(navController)
-}*/
+    ContactItScreen(navController = rememberNavController())
+}

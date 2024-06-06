@@ -25,9 +25,6 @@ import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -54,24 +51,24 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
-            if (attendance.checkInDateTime != null) {
+            if (attendance.checkInTime != null) {
                 Text(
-                    text = dateFormat.format(attendance.checkInDateTime),
+                    text = dateFormat.format(attendance.checkInTime),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = dayOfWeekFormat.format(attendance.checkInDateTime),
+                    text = dayOfWeekFormat.format(attendance.checkInTime),
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Check-in: ${timeFormat.format(attendance.checkInDateTime)}",
+                    text = "Check-in: ${timeFormat.format(attendance.checkInTime)}",
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "Check-out: ${attendance.checkOutDateTime?.let { timeFormat.format(it) } ?: "N/A"}",
+                    text = "Check-out: ${attendance.checkOutTime?.let { timeFormat.format(it) } ?: "N/A"}",
                     fontSize = 18.sp
                 )
             }

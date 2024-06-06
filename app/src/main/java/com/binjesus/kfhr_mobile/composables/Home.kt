@@ -1,4 +1,5 @@
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -6,6 +7,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,14 +28,20 @@ import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.timer
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
 
+    var isCheckedOut = viewModel.attendance?.checkOutTime != null
+    var timeLeft by remember { mutableStateOf(calculateTimeLeft(isCheckedOut)) }
+    timer(initialDelay = 1000L, period = 1000L) {
+        timeLeft = calculateTimeLeft(isCheckedOut)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +56,7 @@ fun HomeScreen(
         ) {
             Spacer(modifier = Modifier.height(12.dp))
 
-           HomeTopBar(viewModel = viewModel, navController = navController)
+            HomeTopBar(viewModel = viewModel, navController = navController)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -58,12 +69,8 @@ fun HomeScreen(
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    var timeLeft = ""
-                    var isCheckout = viewModel.attendance?.checkOutDateTime
                     var timeLeftTitle = "Please check in to see time left"
-                    if (isCheckout != null) {
-                        timeLeft =
-                            calculateTimeLeft(viewModel.attendance?.checkOutDateTimeObject()!!)
+                    if (viewModel.attendance?.checkInTime != null) {
                         timeLeftTitle = "Time left till check out"
                     }
 
@@ -92,20 +99,26 @@ fun HomeScreen(
                 var checkOutTime = "--:--"
                 if (viewModel.attendance != null) {
                     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                    checkInTime = timeFormat.format(viewModel.attendance!!.checkInDateTimeObject())
-                    checkOutTime = timeFormat.format(viewModel.attendance!!.checkOutDateTimeObject())
+                    Log.e("SSSSS", viewModel.attendance!!.checkInTime.toString())
+                    Log.e("SSSSS", viewModel.attendance!!.checkOutTime.toString())
+                    if (viewModel.attendance!!.checkInTime != null)
+                        checkInTime =
+                            timeFormat.format(viewModel.attendance!!.checkInDateTimeObject())
+                    if (viewModel.attendance!!.checkOutTime != null)
+                        checkOutTime =
+                            timeFormat.format(viewModel.attendance!!.checkOutDateTimeObject())
 
                 }
 
-                    CheckInOutCard(
-                        time = checkInTime,
-                        label = "Check In"
-                    )
+                CheckInOutCard(
+                    time = checkInTime,
+                    label = "Check In"
+                )
 
-                    CheckInOutCard(
-                        time = checkOutTime,
-                        label = "Check Out"
-                    )
+                CheckInOutCard(
+                    time = checkOutTime,
+                    label = "Check Out"
+                )
 
             }
 
@@ -214,12 +227,28 @@ fun CheckInOutCard(time: String, label: String) {
 }
 
 
-fun calculateTimeLeft(checkOutDateTime: Date): String {
+fun calculateTimeLeft(isCheckedOut: Boolean): String {
     val currentTime = Date()
-    val diff = checkOutDateTime.time - currentTime.time
+    val calendar = Calendar.getInstance()
+    calendar.time = currentTime
+
+    // Set the time to 3 PM today
+    calendar.set(Calendar.HOUR_OF_DAY, 15)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+
+    if (currentTime.after(calendar.time) || isCheckedOut) {
+        calendar.time = currentTime
+    }
+
+    val threePmToday = calendar.time
+    val diff = threePmToday.time - currentTime.time
+
     val hours = (diff / (1000 * 60 * 60)).toInt()
     val minutes = ((diff / (1000 * 60)) % 60).toInt()
     val seconds = ((diff / 1000) % 60).toInt()
+
     return String.format("%02d:%02d:%02d hrs", hours, minutes, seconds)
 }
 

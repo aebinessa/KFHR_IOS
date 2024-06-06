@@ -33,11 +33,11 @@ interface KFHRApiService {
     @GET(Endpoint.getLeaveEndpoint)
     suspend fun getLeave(@Header("Authorization") token: String): List<Leave>
     @GET(Endpoint.getLateMinutesLeftEndpoint)
-    suspend fun getLateMinutesLeft(@Header("Authorization") token: String) : LateMinutesLeft
+    suspend fun getLateMinutesLeft(@Header("Authorization") token: String) : Response<LateMinutesLeft>
     @GET(Endpoint.getAttendanceRecordEndpoint)
     suspend fun getAttendanceRecord(@Header("Authorization") token: String) : List<Attendance>
     @GET(Endpoint.getTodayAttendanceEndpoint)
-    suspend fun getTodayAttendance(@Header("Authorization") token: String) : Attendance
+    suspend fun getTodayAttendance(@Header("Authorization") token: String) : Response<Attendance>
     @GET(Endpoint.getSubmittedCertificatesEndpoint)
     suspend fun getSubmittedCertificates(@Header("Authorization") token: String) : List<Certificate>
 

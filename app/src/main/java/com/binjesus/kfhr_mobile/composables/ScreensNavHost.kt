@@ -64,6 +64,7 @@ fun ScreensNavHost(
 
             composable(Route.HomeRoute) {
                 viewModel.fetchLateMinutesLeft()
+                viewModel.getTodayAttendance()
                 HomeScreen(navController, viewModel)
             }
 

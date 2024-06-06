@@ -12,6 +12,7 @@ import com.binjesus.kfhr_mobile.models.Certificate
 import com.binjesus.kfhr_mobile.models.Employee
 import com.binjesus.kfhr_mobile.models.LateMinutesLeft
 import com.binjesus.kfhr_mobile.models.Leave
+import com.binjesus.kfhr_mobile.models.LeaveRequest
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
 import com.binjesus.kfhr_mobile.models.TokenResponse
 import com.binjesus.kfhr_mobile.models.requests.LoginRequest
@@ -207,17 +208,21 @@ class KFHRViewModel : ViewModel() {
             Log.e("KFHRViewModel", "Error: Token is null")
         }
     }
-    fun applyForLeave(newLeave :Leave
-    ) {
+    fun applyForLeave(newLeave: LeaveRequest) {
         token?.let { authToken ->
             viewModelScope.launch {
                 isLoading.value = true
                 try {
-                    val response: Response<Void> =
-                        apiService.applyForLeave("Bearer $authToken", newLeave)
-                    isLeaveRequestSuccessful = response.isSuccessful
-                    if (!response.isSuccessful) {
-                        leaves += newLeave
+                    val response: Response<Void> = apiService.applyForLeave("Bearer $authToken", newLeave)
+                    Log.d("ApplyForLeave", "Received response: ${response.message()}")
+                    Log.d("ApplyForLeave", "Received response: ${response.code()}")
+
+                    if (response.isSuccessful) {
+                        isLeaveRequestSuccessful = true
+                    } else {
+                        Log.d("ApplyForLeave", "Leave request failed")
+
+                        isLeaveRequestSuccessful = false
                         errorMessage.value = "Failed to apply for leave. Please try again."
                     }
                 } catch (e: HttpException) {
@@ -228,9 +233,11 @@ class KFHRViewModel : ViewModel() {
                     isLoading.value = false
                 }
             }
+        } ?: run {
+            errorMessage.value = "Token is null"
         }
-
     }
+
 
     fun getAttendances() {
         token?.let { authToken ->

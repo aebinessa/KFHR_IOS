@@ -78,8 +78,7 @@ fun MyLeavesScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                LeaveApplicationsList(viewModel.leaves
-                )
+                LeaveApplicationsList(viewModel.leaves)
             }
         }
     )
@@ -93,7 +92,11 @@ fun FilterDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box {
-        Button(onClick = { expanded = true }, shape = RoundedCornerShape(8.dp), colors = ButtonDefaults.buttonColors(backgroundColor = Color(76, 175, 80))) {
+        Button(
+            onClick = { expanded = true },
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(76, 175, 80))
+        ) {
             Text(selectedFilter)
             Icon(Icons.Filled.ArrowDropDown, contentDescription = "Dropdown")
         }
@@ -129,22 +132,19 @@ fun LeaveApplicationItem(leave: Leave) {
         elevation = 8.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(leave.startDate.toString(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(text = leave.startDate, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(leave.leaveTypes.toString(), color = Color(16, 89, 179))
+            Text(text = leave.leaveType, color = Color(16, 89, 179))
             Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(leave.status!!, color = when (leave.status) {
-                    "Approved" -> Color.Green
-                    "Declined" -> Color.Red
-                    "Awaiting" -> Color.Gray
-                    else -> Color.Black
-                })
-//                Icon(Icons.Filled.ArrowForward, contentDescription = "Details")
-            }
+            if (leave.status != null)
+                Text(
+                    text = leave.status, color = when (leave.status) {
+                        "Approved" -> Color.Green
+                        "Declined" -> Color.Red
+                        "Awaiting" -> Color.Gray
+                        else -> Color.Black
+                    }
+                )
         }
     }
 }

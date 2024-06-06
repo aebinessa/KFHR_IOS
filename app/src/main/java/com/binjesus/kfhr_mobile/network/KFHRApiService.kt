@@ -9,9 +9,7 @@ import com.binjesus.kfhr_mobile.models.RecommendedCertificate
 import com.binjesus.kfhr_mobile.models.TokenResponse
 import com.binjesus.kfhr_mobile.models.requests.CheckInRequest
 import com.binjesus.kfhr_mobile.models.requests.CheckOutRequest
-import com.binjesus.kfhr_mobile.models.requests.LeaveRequest
 import com.binjesus.kfhr_mobile.models.requests.LoginRequest
-import com.binjesus.kfhr_mobile.models.responses.LeaveStatusResponse
 import com.binjesus.kfhr_mobile.utils.Endpoint
 import retrofit2.Response
 import retrofit2.http.Body
@@ -44,5 +42,5 @@ interface KFHRApiService {
     suspend fun getSubmittedCertificates(@Header("Authorization") token: String) : List<Certificate>
 
     @POST(Endpoint.submitLeaveEndpoint)
-    suspend fun applyForLeave(leave1: String, @Body leave: Leave): Response<Void>
+    suspend fun applyForLeave(@Header("Authorization") token: String, @Body newLeave: com.binjesus.kfhr_mobile.models.LeaveRequest): Response<Void>
 }

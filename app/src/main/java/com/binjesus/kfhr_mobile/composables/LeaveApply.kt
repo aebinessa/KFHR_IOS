@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.binjesus.kfhr_mobile.R
-import com.binjesus.kfhr_mobile.models.Leave
+import com.binjesus.kfhr_mobile.models.LeaveRequest
+import com.binjesus.kfhr_mobile.models.LeaveType
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,25 +30,25 @@ fun ApplyForLeaveScreen(
     navController: NavHostController,
     viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    var leaveType by remember { mutableStateOf("") }
+    var leaveType by remember { mutableStateOf(LeaveType.Annual) }
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
-    var status by remember { mutableStateOf("") }
 
-    val leaveTypes = listOf("Sick Leave", "Casual Leave", "Maternity Leave", "Paternity Leave", "Annual Leave")
+    val leaveTypes = LeaveType.values()
 
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val context = LocalContext.current
+    val isoDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
 
+    val context = LocalContext.current
     val calendar = Calendar.getInstance()
 
     val startDatePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
             calendar.set(year, month, dayOfMonth)
-            startDate = dateFormat.format(calendar.time)
+            startDate = isoDateFormat.format(calendar.time)
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),
@@ -58,7 +59,7 @@ fun ApplyForLeaveScreen(
         context,
         { _, year, month, dayOfMonth ->
             calendar.set(year, month, dayOfMonth)
-            endDate = dateFormat.format(calendar.time)
+            endDate = isoDateFormat.format(calendar.time)
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),
@@ -113,8 +114,8 @@ fun ApplyForLeaveScreen(
                 ) {
                     Box {
                         OutlinedTextField(
-                            value = leaveType,
-                            onValueChange = { leaveType = it },
+                            value = leaveType.name,
+                            onValueChange = {},
                             label = { Text("Type of Leave") },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -143,31 +144,33 @@ fun ApplyForLeaveScreen(
                                     leaveType = type
                                     expanded = false
                                 }) {
-                                    Text(text = type)
+                                    Text(text = type.name)
                                 }
                             }
                         }
                     }
 
                     OutlinedTextField(
-                        value = startDate,
-                        onValueChange = { startDate = it },
+                        value = if (startDate.isNotEmpty()) dateFormat.format(isoDateFormat.parse(startDate)) else "",
+                        onValueChange = {},
                         label = { Text("Start Date") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
                             .clickable { startDatePickerDialog.show() },
-                        enabled = false
+                        enabled = false,
+                        readOnly = true
                     )
                     OutlinedTextField(
-                        value = endDate,
-                        onValueChange = { endDate = it },
+                        value = if (endDate.isNotEmpty()) dateFormat.format(isoDateFormat.parse(endDate)) else "",
+                        onValueChange = {},
                         label = { Text("End Date") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
                             .clickable { endDatePickerDialog.show() },
-                        enabled = false
+                        enabled = false,
+                        readOnly = true
                     )
                     OutlinedTextField(
                         value = notes,
@@ -190,16 +193,13 @@ fun ApplyForLeaveScreen(
 
             Button(
                 onClick = {
-                    val newLeave = Leave(
-                        id = 0,
-                        employeeId = viewModel.employee!!.employeeId,
-                        leaveTypes = leaveType,
-                        startDate =startDate,
+                    val newLeaveRequest = LeaveRequest(
+                        leaveTypes = leaveType.toInt(),
+                        startDate = startDate,
                         endDate = endDate,
-                        notes = notes,
-                        status = status
+                        notes = notes
                     )
-                    viewModel.applyForLeave(newLeave)
+                    viewModel.applyForLeave(newLeaveRequest)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

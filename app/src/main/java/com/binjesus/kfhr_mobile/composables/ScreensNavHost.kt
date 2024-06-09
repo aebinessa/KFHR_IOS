@@ -40,7 +40,6 @@ fun ScreensNavHost(
             startDestination = startDestination
         ) {
             composable(Route.NFCRoute) {
-
                 NFCIdScreen(navController, viewModel)
             }
 

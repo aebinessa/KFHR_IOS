@@ -23,6 +23,9 @@ import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.utils.convertDateToBasicDateStringFormat
+import com.binjesus.kfhr_mobile.utils.convertDateToDayOfWeek
+import com.binjesus.kfhr_mobile.utils.convertDateToTimeString
 import com.binjesus.kfhr_mobile.utils.convertStringToDate
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
@@ -31,9 +34,6 @@ import java.util.*
 
 @Composable
 fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val dayOfWeekFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     Card(
         modifier = modifier
             .fillMaxWidth(0.9f)
@@ -49,25 +49,24 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
             if (attendance.checkInTime != null) {
                 val checkinDate = convertStringToDate(attendance.checkInTime)
                 Text(
-                    text = dateFormat.format(checkinDate),
+                    text = convertDateToBasicDateStringFormat(attendance.checkInTime),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = dayOfWeekFormat.format(checkinDate),
+                    text = convertDateToDayOfWeek(attendance.checkInTime),
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Check-in: ${timeFormat.format(checkinDate)}",
+                    text = "Check-in: ${convertDateToTimeString(attendance.checkInTime)}",
                     fontSize = 18.sp
                 )
 
                 if (attendance.checkOutTime != null) {
-                    val checkoutDate = convertStringToDate(attendance.checkOutTime)
                     Text(
-                        text = "Check-out: ${timeFormat.format(checkoutDate)}",
+                        text = "Check-out: ${convertDateToTimeString(attendance.checkOutTime)}",
                         fontSize = 18.sp
                     )
                 }

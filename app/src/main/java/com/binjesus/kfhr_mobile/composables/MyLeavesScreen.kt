@@ -25,6 +25,8 @@ import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Leave
 import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.utils.convertDateToBasicDateStringFormat
+import com.binjesus.kfhr_mobile.utils.convertDateToDayOfWeek
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
@@ -148,7 +150,15 @@ fun LeaveApplicationItem(leave: Leave) {
         elevation = 8.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = leave.startDate, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(
+                text = convertDateToBasicDateStringFormat(leave.startDate),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+            Text(
+                text = convertDateToDayOfWeek(leave.startDate), fontSize = 16.sp,
+                color = Color.Gray
+            )
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = leave.leaveType, color = Color(16, 89, 179))
             Spacer(modifier = Modifier.height(4.dp))

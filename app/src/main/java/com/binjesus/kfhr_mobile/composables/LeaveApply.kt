@@ -66,6 +66,10 @@ fun ApplyForLeaveScreen(
         calendar.get(Calendar.DAY_OF_MONTH)
     )
 
+    if (viewModel.isLeaveRequestSuccessful) {
+        navController.popBackStack()
+        viewModel.isLeaveRequestSuccessful = false
+    }
     Scaffold(
         topBar = {
             Row(

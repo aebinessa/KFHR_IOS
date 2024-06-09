@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,7 +12,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Leave
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
@@ -47,14 +51,26 @@ fun MyLeavesScreen(
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { navController.navigate(Route.ApplyLeavesRoute) }) {
-                    Icon(
-                        imageVector = Icons.Default.AddCircle,
-                        contentDescription = "Add",
-                        tint = Color.Black,
-                        modifier = Modifier.size(32.dp)
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(Route.ApplyLeavesRoute) },
+                backgroundColor = Color(0xFF4CAF50),
+                modifier = Modifier
+                    .padding(
+                        bottom = 24.dp,
+                        end = 16.dp
                     )
-                }
+                    .size(75.dp)
+                    .shadow(elevation = 20.dp, shape = CircleShape)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.add),
+                    contentDescription = "Add",
+                    tint = Color.Black,
+                    modifier = Modifier.size(32.dp)
+                )
             }
         },
         content = { paddingValues ->

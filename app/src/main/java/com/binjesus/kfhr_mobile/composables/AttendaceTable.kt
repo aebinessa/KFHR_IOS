@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Attendance
 import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.utils.convertStringToDate
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,7 +34,6 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     val dayOfWeekFormat = SimpleDateFormat("EEEE", Locale.getDefault())
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
     Card(
         modifier = modifier
             .fillMaxWidth(0.9f)
@@ -46,31 +46,31 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Text(
-                text = attendance.employeeId.toString(),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
             if (attendance.checkInTime != null) {
+                val checkinDate = convertStringToDate(attendance.checkInTime)
                 Text(
-                    text = dateFormat.format(attendance.checkInTime),
+                    text = dateFormat.format(checkinDate),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = dayOfWeekFormat.format(attendance.checkInTime),
+                    text = dayOfWeekFormat.format(checkinDate),
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Check-in: ${timeFormat.format(attendance.checkInTime)}",
+                    text = "Check-in: ${timeFormat.format(checkinDate)}",
                     fontSize = 18.sp
                 )
-                Text(
-                    text = "Check-out: ${attendance.checkOutTime?.let { timeFormat.format(it) } ?: "N/A"}",
-                    fontSize = 18.sp
-                )
+
+                if (attendance.checkOutTime != null) {
+                    val checkoutDate = convertStringToDate(attendance.checkOutTime)
+                    Text(
+                        text = "Check-out: ${timeFormat.format(checkoutDate)}",
+                        fontSize = 18.sp
+                    )
+                }
             }
         }
     }
@@ -102,7 +102,7 @@ fun AttendanceList(navController: NavHostController,
         val maxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         (1..maxDate).toList()
     }
-     val filteredAttendances by remember (selectedMonth, selectedYear, selectedDate) {
+     var filteredAttendances by remember (selectedMonth, selectedYear, selectedDate) {
         mutableStateOf(viewModel.attendances.filter { attendance: Attendance ->
             val calAttendance = Calendar.getInstance().apply { time = attendance.checkInDateTimeObject() }
             calAttendance.get(Calendar.YEAR) == selectedYear &&
@@ -145,7 +145,7 @@ fun AttendanceList(navController: NavHostController,
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

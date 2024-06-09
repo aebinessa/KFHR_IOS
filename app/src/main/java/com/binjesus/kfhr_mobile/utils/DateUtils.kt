@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 fun convertStringToDate(stringDate: String): Date {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
     // Parse the date string to LocalDateTime
     val localDateTime = LocalDateTime.parse(stringDate, formatter)
 
@@ -16,7 +16,7 @@ fun convertStringToDate(stringDate: String): Date {
 }
 
 fun convertDateToString(date: Date): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
     // Convert LocalDateTime to Date
     return formatter.format(date)
 }

@@ -61,6 +61,26 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
                 }
             }
         },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(Route.SubmitCertificateRoute) },
+                backgroundColor = Color(0xFF4CAF50),
+                modifier = Modifier
+                    .padding(
+                        bottom = 24.dp,
+                        end = 16.dp
+                    )
+                    .size(75.dp)
+                    .shadow(elevation = 20.dp, shape = CircleShape)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.add),
+                    contentDescription = "Add",
+                    tint = Color.Black,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+        }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
@@ -76,7 +96,7 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
                 }
             }
             Button(
-                onClick = { navController.popBackStack() },
+                onClick = { navController.navigate(Route.RecommendedCertificatesRoute) },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -87,25 +107,6 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
                     .size(150.dp, 50.dp)
             ) {
                 Text("Recommended", color = Color.White)
-            }
-            FloatingActionButton(
-                onClick = { navController.navigate(Route.SubmitCertificateRoute) },
-                backgroundColor = Color(0xFF4CAF50),
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(
-                        bottom = 24.dp,
-                        end = 16.dp
-                    )
-                    .size(75.dp)
-                    .shadow(elevation = 20.dp, shape = CircleShape)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.add),
-                    contentDescription = "Add",
-                    tint = Color.Black,
-                    modifier = Modifier.size(32.dp)
-                )
             }
         }
     }

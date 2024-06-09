@@ -36,8 +36,8 @@ fun RecommendedCertificatesScreen(
     navController: NavHostController,
     viewModel: KFHRViewModel,
     onCertificateClick: (RecommendedCertificate) -> Unit
-)
-{ Scaffold(
+) {
+    Scaffold(
         topBar = {
             Row(
                 modifier = Modifier
@@ -61,7 +61,7 @@ fun RecommendedCertificatesScreen(
                     )
                 }
             }
-        },
+        }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
@@ -72,28 +72,11 @@ fun RecommendedCertificatesScreen(
                     .padding(16.dp)
             ) {
                 items(viewModel.recommendedCertificates) { certificate ->
-                    RecommendedCertificateCard(certificate = certificate, onClick = { onCertificateClick(certificate) })
+                    RecommendedCertificateCard(
+                        certificate = certificate,
+                        onClick = { onCertificateClick(certificate) })
                     Spacer(modifier = Modifier.height(16.dp))
                 }
-            }
-            FloatingActionButton(
-                onClick = { navController.navigate(Route.MyCertificatesRoute) },
-                backgroundColor = Color(0xFF4CAF50),
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(
-                        bottom = 64.dp,
-                        end = 16.dp
-                    ) // Adjust the padding to position the button above the bottom bar
-                    .size(75.dp)
-                    .shadow(elevation = 20.dp, shape = CircleShape)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.certificate),
-                    contentDescription = "earned certificates",
-                    tint = Color.Black,
-                    modifier = Modifier.size(32.dp)
-                )
             }
         }
     }

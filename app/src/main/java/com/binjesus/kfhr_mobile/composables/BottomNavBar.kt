@@ -23,7 +23,7 @@ fun BottomNavBar(navController: NavController) {
         BottomNavItem("HOME", R.drawable.home, Route.HomeRoute),
         BottomNavItem("ATTEND", R.drawable.security, Route.AttendanceRoute),
         BottomNavItem("LEAVES", R.drawable.document, Route.MyLeavesRoute),
-        BottomNavItem("CERTS", R.drawable.onlinecertificate, Route.RecommendedCertificatesRoute),
+        BottomNavItem("CERTS", R.drawable.onlinecertificate, Route.MyCertificatesRoute),
         BottomNavItem("DIRECTORY", R.drawable.agenda, Route.DirectoryRoute)
     )
 

@@ -29,7 +29,6 @@ class KFHRViewModel : ViewModel() {
     var token: String? by mutableStateOf(null)
     var showValidationError: Boolean by mutableStateOf(false)
     var selectedDirectoryEmployee: Employee? by mutableStateOf(null)
-    var certificates: List<Certificate> by mutableStateOf(emptyList())
     var recommendedCertificates: List<RecommendedCertificate> by mutableStateOf(emptyList())
     var notifications: List<NotificationItem> by mutableStateOf(emptyList())
     var isLeaveRequestSuccessful: Boolean by mutableStateOf(false)
@@ -39,9 +38,10 @@ class KFHRViewModel : ViewModel() {
     var employee: TokenResponse? by mutableStateOf(null)
     var attendances by mutableStateOf<List<Attendance>>(emptyList())
     var lateMinutesLeft: LateMinutesLeft? by mutableStateOf(null)
-    var submittedCertificates by mutableStateOf<List<Certificate>>(emptyList())
+    var MyCertificates by mutableStateOf<List<Certificate>>(emptyList())
     var leaves by mutableStateOf<List<Leave>>(emptyList())
-    var leave: Leave? by mutableStateOf(null)
+
+    var isSubmitedCertificateSuccessful: Boolean by mutableStateOf(false)
 
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
@@ -114,16 +114,16 @@ class KFHRViewModel : ViewModel() {
         }
     }
 
-    fun getSubmittedCertificates() {
+    fun getMyCertificates() {
         token?.let { authToken ->
             viewModelScope.launch {
                 isLoading.value = true
                 try {
-                    val response = apiService.getSubmittedCertificates("Bearer $authToken")
+                    val response = apiService.getMyCertificates("Bearer $authToken")
                     if (response.isNotEmpty()) {
-                        submittedCertificates = response
+                        MyCertificates = response
                         errorMessage.value = ""
-                        Log.d("KFHRViewModel", "Employees fetched successfully")
+                        Log.d("KFHRViewModel", "Certificates fetched successfully")
 
                     }
                 } catch (e: Exception) {
@@ -183,7 +183,6 @@ class KFHRViewModel : ViewModel() {
         }
     }
 
-
     fun submitCertificate(newCertificate: Certificate) {
         token?.let { authToken ->
             viewModelScope.launch {
@@ -191,14 +190,16 @@ class KFHRViewModel : ViewModel() {
                 try {
                     val response = apiService.submitCertificate("Bearer $authToken", newCertificate)
                     if (response.isSuccessful) {
-                        certificates = certificates + newCertificate
+                        isSubmitedCertificateSuccessful = true
                         errorMessage.value = ""
                         Log.d("KFHRViewModel", "Certificate submitted successfully")
                     } else {
+                        isSubmitedCertificateSuccessful = false
                         errorMessage.value = "Submission failed: ${response.message()}"
                         Log.e("KFHRViewModel", "Submission failed: ${response.message()}")
                     }
                 } catch (e: Exception) {
+                    isSubmitedCertificateSuccessful = false
                     errorMessage.value = "Error: ${e.message}"
                     Log.e("KFHRViewModel", "Error: $e")
                 } finally {

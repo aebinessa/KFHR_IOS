@@ -49,7 +49,7 @@ fun ScreensNavHost(
             }
 
             composable(Route.MyCertificatesRoute) {
-                viewModel.getSubmittedCertificates()
+                viewModel.getMyCertificates()
                 MyCertificates(navController, viewModel)
             }
 

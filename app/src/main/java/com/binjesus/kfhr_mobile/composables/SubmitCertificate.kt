@@ -39,9 +39,13 @@ fun CertificateSubmissionScreen(navController: NavHostController,
     var expirationDate = remember { mutableStateOf("") }
     var verificationURL by remember { mutableStateOf("") }
 
-    if (viewModel.isLoading.value) {
+    if (viewModel.isSubmitedCertificateSuccessful) {
+
         Toast.makeText(context, "Certificate submitted successfully", Toast.LENGTH_SHORT).show()
+        navController.popBackStack()
+        viewModel.isSubmitedCertificateSuccessful = false
     }
+
 
     Scaffold(
         topBar = {

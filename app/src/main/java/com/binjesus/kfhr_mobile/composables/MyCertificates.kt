@@ -16,16 +16,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Certificate
 import com.binjesus.kfhr_mobile.utils.Route
-import androidx.compose.runtime.collectAsState
 
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
@@ -90,7 +87,7 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
                     .background(Color.White)
                     .padding(16.dp)
             ) {
-                items(viewModel.certificates) { certificate ->
+                items(viewModel.MyCertificates) { certificate ->
                     CertificateCard(certificate = certificate)
                     Spacer(modifier = Modifier.height(16.dp))
                 }

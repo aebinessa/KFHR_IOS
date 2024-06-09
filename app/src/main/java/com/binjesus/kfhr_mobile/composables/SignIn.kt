@@ -56,22 +56,14 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "KFHR",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = Color(0xFF078544),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+
 
         Image(
-            painter = painterResource(id = R.drawable.kfh_logo),
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "KFHR Logo",
             modifier = Modifier
                 .size(200.dp)
@@ -136,7 +128,7 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF078544)),
+                colors = ButtonDefaults.buttonColors(),
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Text(
@@ -161,11 +153,12 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
         Text(
             text = "Forgot Password? Contact IT",
             fontSize = 16.sp,
-            color = Color.Blue,
+            color = Color.Black,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(top = 8.dp)
                 .clickable { navController.navigate(Route.ContactItRoute) }
+
         )
     }
 }

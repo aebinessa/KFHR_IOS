@@ -12,11 +12,12 @@ data class Employee(
     val gender: String,
     val profilePicURL: String,
     val nfcIdNumber: Int,
-    val positionId: Int,
-    val departmentId: Int,
+    val positionName: String?,
+    val departmentName: Department?,
     val pointsEarned: Int,
     val isAdmin: Boolean
 )
+
 
 
 

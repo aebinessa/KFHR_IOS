@@ -73,7 +73,9 @@ class KFHRViewModel : ViewModel() {
                     if (response.isNotEmpty()) {
                         employees.value = response
                         errorMessage.value = ""
-                        Log.d("KFHRViewModel", "Employees fetched successfully")
+                        for (employee in employees.value) {
+                            Log.e("KFHRViewModel", employee.toString())
+                        }
 
                     }
                 } catch (e: Exception) {

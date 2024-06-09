@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -30,9 +29,9 @@ import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 @Composable
 fun EmployeeDirectoryScreen(navController: NavController, viewModel: KFHRViewModel) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
-    val employees by viewModel.employees
-    val isLoading by viewModel.isLoading
-    val errorMessage by viewModel.errorMessage
+    viewModel.employees
+    viewModel.isLoading
+    viewModel.errorMessage
 
     Column(
         modifier = Modifier
@@ -59,15 +58,12 @@ fun EmployeeDirectoryScreen(navController: NavController, viewModel: KFHRViewMod
         )
 
         when {
-            isLoading -> {
-                CircularProgressIndicator()
-            }
-            errorMessage.isNotEmpty() -> {
-                Text(text = errorMessage, color = Color.Red)
+            viewModel.errorMessage.value.isNotEmpty() -> {
+                Text(text = viewModel.errorMessage.value, color = Color.Red)
             }
             else -> {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(employees.filter {
+                    items(viewModel.employees.value.filter {
                         it.name.contains(searchQuery.text, ignoreCase = true)
                     }) { employee ->
                         EmployeeListItem(employee) {
@@ -119,12 +115,16 @@ fun EmployeeListItem(employee: Employee, onClick: () -> Unit) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Position ID:",
+                            text = "Position :",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.Gray
                         )
+                        var positionName = ""
+                        if (employee.positionName != null) {
+                            positionName = employee.positionName
+                        }
                         Text(
-                            text = employee.positionId?.toString() ?: "N/A",
+                            text = positionName,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -135,8 +135,13 @@ fun EmployeeListItem(employee: Employee, onClick: () -> Unit) {
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.Gray
                         )
+                        var departmentName = ""
+                        if (employee.departmentName != null) {
+                            departmentName = employee.departmentName.departmentName
+                        }
+
                         Text(
-                            text = employee.departmentId?.toString() ?: "N/A",
+                            text = departmentName,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

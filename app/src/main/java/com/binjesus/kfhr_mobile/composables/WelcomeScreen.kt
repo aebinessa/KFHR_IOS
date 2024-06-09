@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.binjesus.kfhr_mobile.R
+import com.binjesus.kfhr_mobile.ui.theme.DarkGreen
+import com.binjesus.kfhr_mobile.ui.theme.LightGreen
 import com.binjesus.kfhr_mobile.utils.Route
 
 @Composable
@@ -38,28 +40,20 @@ fun WelcomeScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(0.dp)
-            .background(Color.White),
+            .background(LightGreen),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(48.dp))
-
-        Text(
-            text = "KFHR",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
         Image(
-            painter = painterResource(id = R.drawable.kfh_logo),
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "KFHR Logo",
             modifier = Modifier
                 .size(220.dp)
                 .padding(bottom = 16.dp),
             contentScale = ContentScale.FillBounds
         )
+
         Spacer(modifier = Modifier.height(48.dp))
 
         Box(
@@ -67,7 +61,8 @@ fun WelcomeScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .shadow(16.dp, RoundedCornerShape(topStart = 18.dp, topEnd = 14.dp))
-                .background(Color(0xFF078544), RoundedCornerShape(topStart = 14.dp, topEnd = 10.dp))
+                .background(DarkGreen,
+                    RoundedCornerShape(topStart = 14.dp, topEnd = 10.dp))
                 .padding(16.dp)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -101,12 +96,12 @@ fun WelcomeScreen(navController: NavHostController) {
                         .fillMaxWidth()
                         .padding(horizontal = 40.dp)
                         .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = LightGreen),
                     shape = RoundedCornerShape(14.dp)
                 ) {
                     Text(
                         text = "Sign In",
-                        color = Color(0xFF4CAF50),
+                        color = DarkGreen,
                         fontSize = 20.sp
                     )
                 }

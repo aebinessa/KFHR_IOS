@@ -50,28 +50,19 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberMe by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "KFHR",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = Color(0xFF078544),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+
 
         Image(
-            painter = painterResource(id = R.drawable.kfh_logo),
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "KFHR Logo",
             modifier = Modifier
                 .size(200.dp)
@@ -122,21 +113,21 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
 
        if (viewModel.showValidationError) {
             errorMessage = "Invalid credentials. Please try again."
-            isLoading = false
+            viewModel.isLoading.value = false
         }
 
-        if (isLoading) {
+        if (viewModel.isLoading.value) {
             CircularProgressIndicator()
         } else {
             Button(
                 onClick = {
-                    isLoading = true
+                    viewModel.isLoading.value = true
                     viewModel.signIn(email, password)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF078544)),
+                colors = ButtonDefaults.buttonColors(),
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Text(
@@ -161,11 +152,12 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
         Text(
             text = "Forgot Password? Contact IT",
             fontSize = 16.sp,
-            color = Color.Blue,
+            color = Color.Black,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(top = 8.dp)
                 .clickable { navController.navigate(Route.ContactItRoute) }
+
         )
     }
 }

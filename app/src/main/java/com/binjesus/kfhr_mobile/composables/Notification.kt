@@ -32,7 +32,6 @@ fun NotificationScreen(viewModel: KFHRViewModel= androidx.lifecycle.viewmodel.co
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
         ) {
             // Top section with profile and name
             Row(

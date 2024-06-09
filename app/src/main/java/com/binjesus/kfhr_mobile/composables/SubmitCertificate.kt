@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +24,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Certificate
+import com.binjesus.kfhr_mobile.ui.theme.DarkGreen
+import com.binjesus.kfhr_mobile.ui.theme.LightGreen
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.utils.convertDateToString
 import com.binjesus.kfhr_mobile.utils.convertStringToDate
@@ -30,8 +34,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun CertificateSubmissionScreen(navController: NavHostController,
-                                viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun CertificateSubmissionScreen(
+    navController: NavHostController,
+    viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val context = LocalContext.current
 
     var certificateName by remember { mutableStateOf("") }
@@ -39,16 +45,20 @@ fun CertificateSubmissionScreen(navController: NavHostController,
     var expirationDate = remember { mutableStateOf("") }
     var verificationURL by remember { mutableStateOf("") }
 
-    if (viewModel.isLoading.value) {
+    if (viewModel.isSubmitedCertificateSuccessful) {
+
         Toast.makeText(context, "Certificate submitted successfully", Toast.LENGTH_SHORT).show()
+        navController.popBackStack()
+        viewModel.isSubmitedCertificateSuccessful = false
     }
+
 
     Scaffold(
         topBar = {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(LightGreen)
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -73,68 +83,53 @@ fun CertificateSubmissionScreen(navController: NavHostController,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
-                .background(Color.White),
+                .background(LightGreen)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                shape = RoundedCornerShape(16.dp),
-                elevation = 4.dp
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    OutlinedTextField(
-                        value = certificateName,
-                        onValueChange = { certificateName = it },
-                        label = { Text("Certificate Name") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-                    )
-                    DatePickerTextField(date=issueDate, title = "Certificate Start")
-                    DatePickerTextField(date=expirationDate, title = "Certificate Expiration")
 
-                    OutlinedTextField(
-                        value = verificationURL,
-                        onValueChange = { verificationURL = it },
-                        label = { Text("Certificate URL") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
-                    )
-                }
-            }
+            MyOutlineTextField(value = certificateName,
+                onValueChange = { certificateName = it },
+                label = "Certificate Name")
+
+            DatePickerTextField(date = issueDate, title = "Certificate Start")
+            DatePickerTextField(date = expirationDate, title = "Certificate Expiration")
+
+            MyOutlineTextField(value = verificationURL,
+                onValueChange = { verificationURL = it },
+                label = "Certificate Url")
+
             Button(
                 onClick = {
-                        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-                        val issueDateParsed = dateFormat.parse(issueDate.value) ?: throw IllegalArgumentException("Invalid issue date")
-                        val expirationDateParsed = dateFormat.parse(expirationDate.value) ?: throw IllegalArgumentException("Invalid expiration date")
-                        val newCertificate = Certificate(
-                            id = 0,
-                            employeeId = viewModel.employee!!.employeeId, // Replace with actual employee ID
-                            certificateName = certificateName,
-                            issueDate = convertDateToString(issueDateParsed),
-                            expirationDate = convertDateToString(expirationDateParsed),
-                            verificationURL = verificationURL
-                        )
-                        viewModel.submitCertificate(newCertificate)
+                    val issueDateParsed = dateFormat.parse(issueDate.value)
+                        ?: throw IllegalArgumentException("Invalid issue date")
+                    val expirationDateParsed = dateFormat.parse(expirationDate.value)
+                        ?: throw IllegalArgumentException("Invalid expiration date")
+                    val newCertificate = Certificate(
+                        id = 0,
+                        employeeId = viewModel.employee!!.employeeId, // Replace with actual employee ID
+                        certificateName = certificateName,
+                        issueDate = convertDateToString(issueDateParsed),
+                        expirationDate = convertDateToString(expirationDateParsed),
+                        verificationURL = verificationURL
+                    )
+                    viewModel.submitCertificate(newCertificate)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+                colors = ButtonDefaults.buttonColors(backgroundColor = DarkGreen),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text(text = "Upload", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                Text(
+                    text = "Upload",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
         }
     }

@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.binjesus.kfhr_mobile.ui.theme.DarkGreen
+import com.binjesus.kfhr_mobile.ui.theme.LightGreen
+import com.binjesus.kfhr_mobile.utils.Route
 
 data class ITEmployee(
     val name: String,
@@ -32,9 +35,9 @@ data class ITEmployee(
 @Composable
 fun ContactItScreen(navController: NavHostController) {
     val employees = listOf(
-        ITEmployee("Jacqueline Salford", "+9665435678", "jacquelinesalford@abcd.com"),
-        ITEmployee("Elon Tusk", "+9655643567", "elontusk@abcd.com"),
-        ITEmployee("Abigail", "+9656345768765", "abigail@abcd.com")
+        ITEmployee("Ahmad", "+96599640840", "ahmad@kfh.com"),
+        ITEmployee("Ahmad", "+96599640840", "ahmad@kfh.com"),
+        ITEmployee("Ahmad", "+96599640840", "ahmad@kfh.com")
     )
 
     Scaffold(
@@ -42,49 +45,29 @@ fun ContactItScreen(navController: NavHostController) {
             TopAppBar(
                 title = { Text(text = "Contact IT") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("WelcomeScreen") }) {
+                    IconButton(onClick = { navController.navigate(Route.WelcomeRoute) }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color(0xFF078544),
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    containerColor = LightGreen,
+                    titleContentColor = DarkGreen,
+                    navigationIconContentColor = DarkGreen
                 )
             )
         }
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF5F5F5))
-                .padding(16.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(it).padding(8.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(
-                    text = "Please contact one of the following officers to get your account setup:",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                employees.forEach { employee ->
-                    EmployeeCard(employee)
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Usual response in 1-2 working days",
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
+            employees.forEach { employee ->
+                EmployeeCard(employee)
             }
+
         }
+
     }
 }
 
@@ -94,7 +77,7 @@ fun EmployeeCard(employee: ITEmployee) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF078544)),
+        colors = CardDefaults.cardColors(containerColor = DarkGreen),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         shape = RoundedCornerShape(12.dp)
     ) {

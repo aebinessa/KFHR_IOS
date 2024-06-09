@@ -40,7 +40,6 @@ fun ScreensNavHost(
             startDestination = startDestination
         ) {
             composable(Route.NFCRoute) {
-
                 NFCIdScreen(navController, viewModel)
             }
 
@@ -49,13 +48,23 @@ fun ScreensNavHost(
             }
 
             composable(Route.MyCertificatesRoute) {
-                viewModel.getSubmittedCertificates()
+                viewModel.getMyCertificates()
                 MyCertificates(navController, viewModel)
             }
 
             composable(Route.SubmitCertificateRoute) {
-
                 CertificateSubmissionScreen(navController, viewModel)
+            }
+
+            composable(Route.RecommendedCertificatesRoute) {
+                viewModel.getRecommendedCertificates()
+                val context = LocalContext.current
+                RecommendedCertificatesScreen(
+                    navController, viewModel
+                ) { certificate ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(certificate.organizationWebsite))
+                    context.startActivity(intent)
+                }
             }
 
             composable(Route.NotificationsRoute) {
@@ -83,18 +92,6 @@ fun ScreensNavHost(
             composable(Route.MyLeavesRoute) {
                 viewModel.fetchLeave()
                 MyLeavesScreen(navController, viewModel)
-            }
-
-
-            composable(Route.RecommendedCertificatesRoute) {
-                viewModel.getRecommendedCertificates()
-                val context = LocalContext.current
-                RecommendedCertificatesScreen(
-                    navController, viewModel
-                ) { certificate ->
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(certificate.organizationWebsite))
-                    context.startActivity(intent)
-                }
             }
 
         }

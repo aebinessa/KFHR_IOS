@@ -22,7 +22,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Attendance
+import com.binjesus.kfhr_mobile.ui.theme.DarkGreen
+import com.binjesus.kfhr_mobile.ui.theme.LightGreen
 import com.binjesus.kfhr_mobile.utils.Route
+import com.binjesus.kfhr_mobile.utils.convertDateToBasicDateStringFormat
+import com.binjesus.kfhr_mobile.utils.convertDateToDayOfWeek
+import com.binjesus.kfhr_mobile.utils.convertDateToTimeString
+import com.binjesus.kfhr_mobile.utils.convertStringToDate
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,47 +36,46 @@ import java.util.*
 
 @Composable
 fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val dayOfWeekFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
     Card(
         modifier = modifier
             .fillMaxWidth(0.9f)
             .padding(vertical = 16.dp),
         shape = RoundedCornerShape(16.dp),
-        elevation = 4.dp
+        elevation = 4.dp,
+        backgroundColor = DarkGreen
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier
+                .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Text(
-                text = attendance.employeeId.toString(),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
             if (attendance.checkInTime != null) {
                 Text(
-                    text = dateFormat.format(attendance.checkInTime),
+                    text = convertDateToBasicDateStringFormat(attendance.checkInTime),
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
                 Text(
-                    text = dayOfWeekFormat.format(attendance.checkInTime),
+                    text = convertDateToDayOfWeek(attendance.checkInTime),
                     fontSize = 16.sp,
-                    color = Color.Gray
+                    color = LightGreen
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Check-in: ${timeFormat.format(attendance.checkInTime)}",
-                    fontSize = 18.sp
+                    text = "Check-in: ${convertDateToTimeString(attendance.checkInTime)}",
+                    fontSize = 18.sp,
+                    color = Color.White
                 )
-                Text(
-                    text = "Check-out: ${attendance.checkOutTime?.let { timeFormat.format(it) } ?: "N/A"}",
-                    fontSize = 18.sp
-                )
+
+                if (attendance.checkOutTime != null) {
+                    Text(
+                        text = "Check-out: ${convertDateToTimeString(attendance.checkOutTime)}",
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
@@ -78,8 +83,10 @@ fun AttendanceRecord(attendance: Attendance, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AttendanceList(navController: NavHostController,
-                   viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun AttendanceList(
+    navController: NavHostController,
+    viewModel: KFHRViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     var selectedMonth by remember { mutableIntStateOf(Calendar.getInstance().get(Calendar.MONTH)) }
     var selectedYear by remember { mutableIntStateOf(Calendar.getInstance().get(Calendar.YEAR)) }
     var selectedDate: Int? by remember { mutableStateOf(null) }
@@ -102,172 +109,172 @@ fun AttendanceList(navController: NavHostController,
         val maxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         (1..maxDate).toList()
     }
-     val filteredAttendances by remember (selectedMonth, selectedYear, selectedDate) {
+    var filteredAttendances by remember(selectedMonth, selectedYear, selectedDate) {
         mutableStateOf(viewModel.attendances.filter { attendance: Attendance ->
-            val calAttendance = Calendar.getInstance().apply { time = attendance.checkInDateTimeObject() }
+            val calAttendance =
+                Calendar.getInstance().apply { time = attendance.checkInDateTimeObject() }
             calAttendance.get(Calendar.YEAR) == selectedYear &&
                     calAttendance.get(Calendar.MONTH) == selectedMonth &&
                     (selectedDate == null || calAttendance.get(Calendar.DAY_OF_MONTH) == selectedDate)
         })
 
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        // TOP BAR
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Attendance Records",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
+                    contentDescription = "Notifications",
+                    tint = Color.Black,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         }
 
-        Column(
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                //.padding(16.dp)
-                .background(Color.White),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // TOP BAR
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+            ExposedDropdownMenuBox(
+                expanded = yearExpanded,
+                onExpandedChange = { yearExpanded = !yearExpanded },
+                modifier = Modifier.wrapContentSize()
             ) {
-                Text(
-                    text = "Attendance Records",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                OutlinedTextField(
+                    value = selectedYear.toString(),
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Year") },
+                    trailingIcon = {
+                        Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                    },
+                    modifier = Modifier
+                        .width(110.dp)
+                        .clickable { yearExpanded = true }
                 )
-                IconButton(onClick = { navController.navigate(Route.NotificationsRoute) }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bell), // Replace with actual icon resource
-                        contentDescription = "Notifications",
-                        tint = Color.Black,
-                        modifier = Modifier.size(28.dp)
-                    )
+                ExposedDropdownMenu(
+                    expanded = yearExpanded,
+                    onDismissRequest = { yearExpanded = false }
+                ) {
+                    years.forEach { year ->
+                        DropdownMenuItem(onClick = {
+                            selectedYear = year
+                            yearExpanded = false
+                        }) {
+                            Text(text = year.toString())
+                        }
+                    }
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Spacer(modifier = Modifier.width(16.dp))
+
+            ExposedDropdownMenuBox(
+                expanded = monthExpanded,
+                onExpandedChange = { monthExpanded = !monthExpanded }
             ) {
-                ExposedDropdownMenuBox(
-                    expanded = yearExpanded,
-                    onExpandedChange = { yearExpanded = !yearExpanded },
-                    modifier = Modifier.wrapContentSize()
-                ) {
-                    OutlinedTextField(
-                        value = selectedYear.toString(),
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Year") },
-                        trailingIcon = {
-                            Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-                        },
-                        modifier = Modifier
-                            .width(110.dp)
-                            .clickable { yearExpanded = true }
-                    )
-                    ExposedDropdownMenu(
-                        expanded = yearExpanded,
-                        onDismissRequest = { yearExpanded = false }
-                    ) {
-                        years.forEach { year ->
-                            DropdownMenuItem(onClick = {
-                                selectedYear = year
-                                yearExpanded = false
-                            }) {
-                                Text(text = year.toString())
-                            }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                ExposedDropdownMenuBox(
+                OutlinedTextField(
+                    value = months[selectedMonth],
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Month") },
+                    trailingIcon = {
+                        Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                    },
+                    modifier = Modifier
+                        .width(110.dp)
+                        .clickable { monthExpanded = true }
+                )
+                ExposedDropdownMenu(
                     expanded = monthExpanded,
-                    onExpandedChange = { monthExpanded = !monthExpanded }
+                    onDismissRequest = { monthExpanded = false }
                 ) {
-                    OutlinedTextField(
-                        value = months[selectedMonth],
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Month") },
-                        trailingIcon = {
-                            Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-                        },
-                        modifier = Modifier
-                            .width(110.dp)
-                            .clickable { monthExpanded = true }
-                    )
-                    ExposedDropdownMenu(
-                        expanded = monthExpanded,
-                        onDismissRequest = { monthExpanded = false }
-                    ) {
-                        months.forEachIndexed { index, month ->
-                            DropdownMenuItem(onClick = {
-                                selectedMonth = index
-                                monthExpanded = false
-                            }) {
-                                Text(text = month)
-                            }
+                    months.forEachIndexed { index, month ->
+                        DropdownMenuItem(onClick = {
+                            selectedMonth = index
+                            monthExpanded = false
+                        }) {
+                            Text(text = month)
                         }
                     }
                 }
+            }
 
-                Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
-                ExposedDropdownMenuBox(
+            ExposedDropdownMenuBox(
+                expanded = dateExpanded,
+                onExpandedChange = { dateExpanded = !dateExpanded }
+            ) {
+                OutlinedTextField(
+                    value = selectedDate?.toString() ?: "All Dates",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Date") },
+                    trailingIcon = {
+                        Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                    },
+                    modifier = Modifier
+                        .width(110.dp)
+                        .clickable { dateExpanded = true }
+                )
+                ExposedDropdownMenu(
                     expanded = dateExpanded,
-                    onExpandedChange = { dateExpanded = !dateExpanded }
+                    onDismissRequest = { dateExpanded = false }
                 ) {
-                    OutlinedTextField(
-                        value = selectedDate?.toString() ?: "All Dates",
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Date") },
-                        trailingIcon = {
-                            Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-                        },
-                        modifier = Modifier
-                            .width(110.dp)
-                            .clickable { dateExpanded = true }
-                    )
-                    ExposedDropdownMenu(
-                        expanded = dateExpanded,
-                        onDismissRequest = { dateExpanded = false }
-                    ) {
+                    DropdownMenuItem(onClick = {
+                        selectedDate = null
+                        dateExpanded = false
+                    }) {
+                        Text(text = "All Dates")
+                    }
+                    dates.forEach { date ->
                         DropdownMenuItem(onClick = {
-                            selectedDate = null
+                            selectedDate = date
                             dateExpanded = false
                         }) {
-                            Text(text = "All Dates")
-                        }
-                        dates.forEach { date ->
-                            DropdownMenuItem(onClick = {
-                                selectedDate = date
-                                dateExpanded = false
-                            }) {
-                                Text(text = date.toString())
-                            }
+                            Text(text = date.toString())
                         }
                     }
                 }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            if (viewModel.attendances.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally // Center the list
-                ) {
-                    items(viewModel.attendances) { attendance ->
-                        AttendanceRecord(attendance = attendance)
-                    }
-                }
-            } else {
-                Text("No attendance records found", style = MaterialTheme.typography.h6)
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        if (viewModel.attendances.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally // Center the list
+            ) {
+                items(viewModel.attendances) { attendance ->
+                    AttendanceRecord(attendance = attendance)
+                }
+            }
+        } else {
+            Text("No attendance records found", style = MaterialTheme.typography.h6)
+        }
+    }
 }
 
 

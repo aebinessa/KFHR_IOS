@@ -28,8 +28,7 @@ import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
 fun NFCIdScreen(navController: NavHostController, viewModel: KFHRViewModel) {
-    Surface(
-    ) {
+    Surface{
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -39,12 +38,6 @@ fun NFCIdScreen(navController: NavHostController, viewModel: KFHRViewModel) {
                     .fillMaxWidth()
                     .height(250.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color(0xFF4CAF50))
-                )
-
                 // Back button
                 IconButton(
                     onClick = { navController.popBackStack() },

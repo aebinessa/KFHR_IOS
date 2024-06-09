@@ -28,6 +28,8 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.RecommendedCertificate
+import com.binjesus.kfhr_mobile.ui.theme.DarkGreen
+import com.binjesus.kfhr_mobile.ui.theme.LightGreen
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
@@ -42,7 +44,7 @@ fun RecommendedCertificatesScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(LightGreen)
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -63,21 +65,21 @@ fun RecommendedCertificatesScreen(
             }
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                contentPadding = paddingValues,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(16.dp)
-            ) {
-                items(viewModel.recommendedCertificates) { certificate ->
-                    RecommendedCertificateCard(
-                        certificate = certificate,
-                        onClick = { onCertificateClick(certificate) })
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(LightGreen)
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            items(viewModel.recommendedCertificates) { certificate ->
+                RecommendedCertificateCard(
+                    certificate = certificate,
+                    onClick = { onCertificateClick(certificate) })
+                Spacer(modifier = Modifier.height(16.dp))
             }
+
         }
     }
 }
@@ -91,7 +93,7 @@ fun RecommendedCertificateCard(certificate: RecommendedCertificate, onClick: () 
             .shadow(8.dp, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = 4.dp,
-        backgroundColor = Color(0xFFF5F5F5)
+        backgroundColor = DarkGreen
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

@@ -50,7 +50,6 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberMe by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
     Column(
@@ -114,15 +113,15 @@ fun SignInScreen(navController: NavController, viewModel: KFHRViewModel) {
 
        if (viewModel.showValidationError) {
             errorMessage = "Invalid credentials. Please try again."
-            isLoading = false
+            viewModel.isLoading.value = false
         }
 
-        if (isLoading) {
+        if (viewModel.isLoading.value) {
             CircularProgressIndicator()
         } else {
             Button(
                 onClick = {
-                    isLoading = true
+                    viewModel.isLoading.value = true
                     viewModel.signIn(email, password)
                 },
                 modifier = Modifier

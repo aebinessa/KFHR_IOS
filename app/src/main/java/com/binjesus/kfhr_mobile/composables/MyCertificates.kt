@@ -22,6 +22,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.binjesus.kfhr_mobile.R
 import com.binjesus.kfhr_mobile.models.Certificate
+import com.binjesus.kfhr_mobile.ui.theme.DarkGreen
+import com.binjesus.kfhr_mobile.ui.theme.LightGreen
 import com.binjesus.kfhr_mobile.utils.Route
 
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
@@ -33,7 +35,7 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(LightGreen)
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -61,7 +63,7 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate(Route.SubmitCertificateRoute) },
-                backgroundColor = Color(0xFF4CAF50),
+                backgroundColor = DarkGreen,
                 modifier = Modifier
                     .padding(
                         bottom = 24.dp,
@@ -73,18 +75,18 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
                 Icon(
                     painter = painterResource(id = R.drawable.add),
                     contentDescription = "Add",
-                    tint = Color.Black,
+                    tint = Color.White,
                     modifier = Modifier.size(32.dp)
                 )
             }
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()
+            .background(LightGreen)) {
             LazyColumn(
                 contentPadding = paddingValues,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
                     .padding(16.dp)
             ) {
                 items(viewModel.MyCertificates) { certificate ->
@@ -94,7 +96,7 @@ fun MyCertificates(navController: NavHostController, viewModel: KFHRViewModel = 
             }
             Button(
                 onClick = { navController.navigate(Route.RecommendedCertificatesRoute) },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+                colors = ButtonDefaults.buttonColors(backgroundColor = DarkGreen),
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(
@@ -118,7 +120,7 @@ fun CertificateCard(certificate: Certificate) {
             .shadow(8.dp, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = 4.dp,
-        backgroundColor = Color(0xFFF5F5F5)
+        backgroundColor = DarkGreen
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -128,24 +130,24 @@ fun CertificateCard(certificate: Certificate) {
                 text = certificate.certificateName,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF4CAF50)
+                color = Color.White
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Issue Date: ${certificate.issueDate}",
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = Color.White
             )
             Text(
                 text = "Expiration Date: ${certificate.expirationDate}",
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = Color.White
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = certificate.verificationURL,
                 fontSize = 14.sp,
-                color = Color.Blue,
+                color = LightGreen,
                 modifier = Modifier.clickable { /* Handle URL click */ }
             )
         }

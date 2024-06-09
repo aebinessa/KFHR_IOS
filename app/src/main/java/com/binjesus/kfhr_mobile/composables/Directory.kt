@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -24,19 +25,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.models.Employee
+import com.binjesus.kfhr_mobile.ui.theme.DarkGreen
+import com.binjesus.kfhr_mobile.ui.theme.LightGreen
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
 fun EmployeeDirectoryScreen(navController: NavController, viewModel: KFHRViewModel) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
-    viewModel.employees
-    viewModel.isLoading
-    viewModel.errorMessage
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -61,6 +60,7 @@ fun EmployeeDirectoryScreen(navController: NavController, viewModel: KFHRViewMod
             viewModel.errorMessage.value.isNotEmpty() -> {
                 Text(text = viewModel.errorMessage.value, color = Color.Red)
             }
+
             else -> {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(viewModel.employees.value.filter {
@@ -80,12 +80,13 @@ fun EmployeeDirectoryScreen(navController: NavController, viewModel: KFHRViewMod
 
 @Composable
 fun EmployeeListItem(employee: Employee, onClick: () -> Unit) {
-    Surface(
+    Card(
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
+        backgroundColor = DarkGreen
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -104,12 +105,13 @@ fun EmployeeListItem(employee: Employee, onClick: () -> Unit) {
                 Text(
                     text = employee.name,
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
                 Text(
                     text = employee.email,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
+                    color = LightGreen
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
@@ -117,7 +119,7 @@ fun EmployeeListItem(employee: Employee, onClick: () -> Unit) {
                         Text(
                             text = "Position :",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
+                            color = LightGreen
                         )
                         var positionName = ""
                         if (employee.positionName != null) {
@@ -125,15 +127,16 @@ fun EmployeeListItem(employee: Employee, onClick: () -> Unit) {
                         }
                         Text(
                             text = positionName,
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
                         )
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Department ID:",
+                            text = "Department:",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
+                            color = LightGreen
                         )
                         var departmentName = ""
                         if (employee.departmentName != null) {
@@ -142,7 +145,8 @@ fun EmployeeListItem(employee: Employee, onClick: () -> Unit) {
 
                         Text(
                             text = departmentName,
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
                         )
                     }
                 }

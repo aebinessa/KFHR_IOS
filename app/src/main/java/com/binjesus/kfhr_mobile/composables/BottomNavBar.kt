@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.binjesus.kfhr_mobile.R
+import com.binjesus.kfhr_mobile.ui.theme.DarkGreen
 import com.binjesus.kfhr_mobile.utils.Route
 
 @Composable
@@ -28,7 +29,8 @@ fun BottomNavBar(navController: NavController) {
     )
 
     BottomNavigation(
-        backgroundColor = Color(0xFF4CAF50)
+        backgroundColor = DarkGreen,
+        contentColor = Color.White
     ) {
         items.forEach { item ->
             BottomNavigationItem(

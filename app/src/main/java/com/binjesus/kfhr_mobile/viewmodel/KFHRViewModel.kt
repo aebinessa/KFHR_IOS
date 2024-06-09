@@ -46,6 +46,7 @@ class KFHRViewModel : ViewModel() {
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
             try {
+                isLoading.value = true
                 val loginRequest = LoginRequest(email, password)
                 val response: Response<TokenResponse> = apiService.signIn(loginRequest)
                 Log.e("HELLO", response.message())
@@ -55,9 +56,11 @@ class KFHRViewModel : ViewModel() {
                     employee = response.body()
                     token = employee?.token // Extract the token string
                 } else {
+                    isLoading.value = false
                     errorMessage.value = "Login failed: ${response.message()}"
                 }
             } catch (e: Exception) {
+                isLoading.value = false
                 errorMessage.value = "Login error: ${e.message}"
                 Log.e("KFHRViewModel", "Login error: ${e.message}")
             }

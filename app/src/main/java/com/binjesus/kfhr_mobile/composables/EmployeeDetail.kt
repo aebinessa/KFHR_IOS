@@ -31,8 +31,7 @@ fun EmployeeDetailScreen(navController: NavHostController, employee: Employee) {
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {

@@ -295,6 +295,22 @@ class KFHRViewModel : ViewModel() {
         )
     }
 
+    fun checkIn() {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                apiService.checkIn("Bearer $authToken")
+            }
+        }
+    }
+
+    fun checkOut() {
+        token?.let { authToken ->
+            viewModelScope.launch {
+                apiService.checkOut("Bearer $authToken")
+            }
+        }
+    }
+
 
     // TODO remove init
     init {

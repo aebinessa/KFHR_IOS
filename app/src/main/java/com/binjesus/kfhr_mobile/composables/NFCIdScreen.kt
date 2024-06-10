@@ -2,6 +2,7 @@ package com.binjesus.kfhr_mobile.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -110,12 +111,12 @@ fun NFCIdScreen(navController: NavHostController, viewModel: KFHRViewModel) {
             contentDescription = "Scan Icon",
             modifier = Modifier
                 .size(200.dp)
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally).clickable { viewModel.checkIn() }
         )
         Image(
             painter = painterResource(id = R.drawable.kfh), // Replace with your logo resource
             contentDescription = "Kuwait Finance House Logo",
-            modifier = Modifier.size(250.dp)
+            modifier = Modifier.size(250.dp).clickable { viewModel.checkOut() }
         )
     }
 }

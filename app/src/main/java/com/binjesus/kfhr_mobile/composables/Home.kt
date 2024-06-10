@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.binjesus.kfhr_mobile.R
+import com.binjesus.kfhr_mobile.ui.theme.yellow33
 import com.binjesus.kfhr_mobile.utils.Route
 import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 import java.text.SimpleDateFormat
@@ -65,23 +66,17 @@ fun HomeScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth() // Adjusted to be wider
+                        .fillMaxWidth()
                         .border(2.dp, DarkGreen, RoundedCornerShape(8.dp))
                 ) {
                     CombinedCheckInOutCard(viewModel = viewModel, timeLeft = timeLeft)
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(2.dp, DarkGreen, RoundedCornerShape(8.dp))
-                ) {
-                    LateMinutesCard(viewModel = viewModel)
-                }
+                CircularLateMinutesTimer(viewModel = viewModel)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
 
@@ -127,7 +122,8 @@ fun HomeTopBar(viewModel: KFHRViewModel, navController: NavHostController) {
         Text(
             text = name,
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.Black // Changed to match the border color
         )
 
         Spacer(modifier = Modifier.width(24.dp))
@@ -136,8 +132,8 @@ fun HomeTopBar(viewModel: KFHRViewModel, navController: NavHostController) {
             Icon(
                 painter = painterResource(id = R.drawable.bell),
                 contentDescription = "Notifications",
-                tint = Color.Black,
-                modifier = Modifier.size(28.dp)
+                tint = DarkGreen, // Changed to match the border color
+                modifier = Modifier.size(34.dp)
             )
         }
     }
@@ -162,13 +158,14 @@ fun CombinedCheckInOutCard(viewModel: KFHRViewModel, timeLeft: String) {
             Text(
                 text = timeLeftTitle,
                 fontSize = 16.sp,
-                color = Color.Gray
+                color = DarkGreen // Changed to match the border color
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = timeLeft,
                 fontSize = 36.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = DarkGreen // Changed to match the border color
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -194,13 +191,15 @@ fun CombinedCheckInOutCard(viewModel: KFHRViewModel, timeLeft: String) {
                 CheckInOutCard(
                     time = checkInTime,
                     label = "Check In",
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    textColor = DarkGreen // Changed to match the border color
                 )
 
                 CheckInOutCard(
                     time = checkOutTime,
                     label = "Check Out",
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    textColor = DarkGreen // Changed to match the border color
                 )
             }
         }
@@ -208,45 +207,55 @@ fun CombinedCheckInOutCard(viewModel: KFHRViewModel, timeLeft: String) {
 }
 
 @Composable
-fun LateMinutesCard(viewModel: KFHRViewModel) {
-    val progress = viewModel.lateMinutesLeft?.minutesLeft?.toFloat()?.div(60) ?: 0f
+fun CircularLateMinutesTimer(viewModel: KFHRViewModel) {
+    //val lateMinutesLeft = viewModel.lateMinutesLeft?.minutesLeft ?: 0
+    val lateMinutesLeft = 20
+    val progress = lateMinutesLeft.toFloat() / 60
 
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        elevation = 4.dp,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(200.dp) // Set the size of the circular timer
         ) {
-            Canvas(modifier = Modifier.size(60.dp)) {
+            Canvas(modifier = Modifier.size(200.dp)) {
                 drawArc(
-                    color = Color.Red,
+                    color = DarkGreen,
+                    startAngle = 0f,
+                    sweepAngle = 360f,
+                    useCenter = false,
+                    style = Stroke(width = 20.dp.toPx())
+                )
+                drawArc(
+                    color = yellow33,
                     startAngle = -90f,
                     sweepAngle = progress * 360,
-                    useCenter = true
-                )
-                drawArc(
-                    color = Color.Gray,
-                    startAngle = -90f + progress * 360,
-                    sweepAngle = (1 - progress) * 360,
-                    useCenter = true,
-                    style = Stroke(width = 8.dp.toPx())
+                    useCenter = false,
+                    style = Stroke(width = 20.dp.toPx())
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Late Minutes Left : ${viewModel.lateMinutesLeft?.minutesLeft ?: "--"}",
-                fontSize = 16.sp,
-                color = Color.Gray
+                text = String.format("%02d:%02d", lateMinutesLeft / 60, lateMinutesLeft % 60),
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkGreen // Changed to match the border color
             )
         }
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "Late Minutes Left: $lateMinutesLeft",
+            fontSize = 18.sp,
+            color = DarkGreen
+        )
     }
 }
 
 @Composable
-fun CheckInOutCard(time: String, label: String, modifier: Modifier = Modifier) {
+fun CheckInOutCard(time: String, label: String, modifier: Modifier = Modifier, textColor: Color) {
     Card(
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp,
@@ -261,12 +270,13 @@ fun CheckInOutCard(time: String, label: String, modifier: Modifier = Modifier) {
             Text(
                 text = time,
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = textColor
             )
             Text(
                 text = label,
                 fontSize = 18.sp,
-                color = Color.Gray
+                color = textColor
             )
         }
     }

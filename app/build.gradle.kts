@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.binjesus.kfhr_mobile"
-        minSdk = 33
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.1"

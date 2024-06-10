@@ -24,7 +24,7 @@ import com.binjesus.kfhr_mobile.utils.Route
 fun NFCFABButton(navController: NavController, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .size(50.dp)
+            .size(60.dp)
             .shadow(4.dp, CircleShape) // Add shadow
             .clip(CircleShape)
             .background(DarkGreen)
@@ -34,7 +34,7 @@ fun NFCFABButton(navController: NavController, modifier: Modifier = Modifier) {
             painter = painterResource(id = R.drawable.card), // Replace with your actual icon resource
             contentDescription = null,
             modifier = Modifier
-                .size(26.dp) // Adjust the size of the icon
+                .size(30.dp) // Adjust the size of the icon
                 .align(Alignment.Center), // Center the icon
             tint = Color.White // Set the icon color
         )

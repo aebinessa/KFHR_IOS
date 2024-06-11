@@ -27,9 +27,9 @@ interface KFHRApiService {
     @POST(Endpoint.submitCertificateEndpoint)
     suspend fun submitCertificate(@Header("Authorization") token: String, @Body certificate: Certificate): Response<Void>
     @POST(Endpoint.checkInEndPoint)
-    suspend fun checkIn(@Header("Authorization") token: String, @Body checkInRequest: CheckInRequest) : Response<Void>
+    suspend fun checkIn(@Header("Authorization") token: String) : Response<Void>
     @POST(Endpoint.checkOutEndPoint)
-    suspend fun checkOut(@Header("Authorization") token: String, @Body checkOutRequest: CheckOutRequest) : Response<Void>
+    suspend fun checkOut(@Header("Authorization") token: String) : Response<Void>
     @GET(Endpoint.getLeaveEndpoint)
     suspend fun getLeave(@Header("Authorization") token: String): List<Leave>
     @GET(Endpoint.getLateMinutesLeftEndpoint)

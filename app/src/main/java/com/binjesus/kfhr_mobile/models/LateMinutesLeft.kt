@@ -6,6 +6,6 @@ data class LateMinutesLeft(
     val id: Int,
     val employeeId: Int,
     val time: String?,
-    val minutesLeft: Int?,
+    val minutesLeft: Int,
     val month: String?
 )

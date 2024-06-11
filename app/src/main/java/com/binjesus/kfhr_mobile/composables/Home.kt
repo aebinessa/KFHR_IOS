@@ -41,9 +41,15 @@ fun HomeScreen(
 ) {
     var isCheckedOut = viewModel.attendance?.checkOutTime != null
     var timeLeft by remember { mutableStateOf(calculateTimeLeft(isCheckedOut)) }
-    timer(initialDelay = 1000L, period = 1000L) {
-        timeLeft = calculateTimeLeft(isCheckedOut)
+
+    if (!isCheckedOut) {
+        timer(initialDelay = 1000L, period = 1000L) {
+            timeLeft = calculateTimeLeft(isCheckedOut)
+        }
+    }else {
+        timeLeft = "00:00:00 hrs"
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -208,9 +214,8 @@ fun CombinedCheckInOutCard(viewModel: KFHRViewModel, timeLeft: String) {
 
 @Composable
 fun CircularLateMinutesTimer(viewModel: KFHRViewModel) {
-    //val lateMinutesLeft = viewModel.lateMinutesLeft?.minutesLeft ?: 0
-    val lateMinutesLeft = 20
-    val progress = lateMinutesLeft.toFloat() / 60
+    val lateMinutesLeft = viewModel.lateMinutesLeft?.minutesLeft ?: 0
+    val progress = lateMinutesLeft.toFloat() / 30
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -224,22 +229,22 @@ fun CircularLateMinutesTimer(viewModel: KFHRViewModel) {
         ) {
             Canvas(modifier = Modifier.size(200.dp)) {
                 drawArc(
-                    color = DarkGreen,
+                    color = yellow33,
                     startAngle = 0f,
                     sweepAngle = 360f,
                     useCenter = false,
                     style = Stroke(width = 20.dp.toPx())
                 )
                 drawArc(
-                    color = yellow33,
+                    color = DarkGreen,
                     startAngle = -90f,
-                    sweepAngle = progress * 360,
+                    sweepAngle = -progress * 360f,
                     useCenter = false,
                     style = Stroke(width = 20.dp.toPx())
                 )
             }
             Text(
-                text = String.format("%02d:%02d", lateMinutesLeft / 60, lateMinutesLeft % 60),
+                text = lateMinutesLeft.toString(),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = DarkGreen // Changed to match the border color
@@ -247,7 +252,7 @@ fun CircularLateMinutesTimer(viewModel: KFHRViewModel) {
         }
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "Late Minutes Left: $lateMinutesLeft",
+            text = "Late Minutes Left",
             fontSize = 18.sp,
             color = DarkGreen
         )

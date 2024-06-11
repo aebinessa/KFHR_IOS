@@ -32,7 +32,7 @@ fun convertStringToDate(stringDate: String): Date {
     // Parse the date string to LocalDateTime
     val localDateTime = LocalDateTime.parse(
         stringDate.substring(0, 16), formatter
-    )
+    ).plusHours(3.toLong())
 
     // Convert LocalDateTime to Date
     return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())

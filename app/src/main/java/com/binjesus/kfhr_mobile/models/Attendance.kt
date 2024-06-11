@@ -13,18 +13,18 @@ data class Attendance(
 ) {
 
     fun checkInDateTimeObject(): Date {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
         // Parse the date string to LocalDateTime
-        val localDateTime = LocalDateTime.parse(checkInTime, formatter)
+        val localDateTime = LocalDateTime.parse(checkInTime?.substring(0, 16), formatter)
 
         // Convert LocalDateTime to Date
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())
     }
 
     fun checkOutDateTimeObject(): Date {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
         // Parse the date string to LocalDateTime
-        val localDateTime = LocalDateTime.parse(checkOutTime, formatter)
+        val localDateTime = LocalDateTime.parse(checkOutTime?.substring(0, 16), formatter)
 
         // Convert LocalDateTime to Date
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())

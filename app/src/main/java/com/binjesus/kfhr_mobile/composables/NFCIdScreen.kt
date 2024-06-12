@@ -1,8 +1,17 @@
 package com.binjesus.kfhr_mobile.composables
 
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.RingtoneManager
+import android.media.SoundPool
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -12,11 +21,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +44,12 @@ import com.binjesus.kfhr_mobile.viewmodel.KFHRViewModel
 
 @Composable
 fun NFCIdScreen(navController: NavHostController, viewModel: KFHRViewModel) {
+    val context = LocalContext.current
+    // Get the URI of the system notification sound
+    val notificationSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+    // Initialize MediaPlayer
+    val mediaPlayerCheckIn = remember { MediaPlayer.create(context, notificationSoundUri) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -111,12 +128,28 @@ fun NFCIdScreen(navController: NavHostController, viewModel: KFHRViewModel) {
             contentDescription = "Scan Icon",
             modifier = Modifier
                 .size(200.dp)
-                .align(Alignment.CenterHorizontally).clickable { viewModel.checkIn() }
+                .align(Alignment.CenterHorizontally)
+                .clickable(interactionSource = remember { MutableInteractionSource() },
+                    indication = null) {
+                    viewModel.checkIn()
+                    Toast.makeText(context, "Congrats! you have checked in", Toast.LENGTH_SHORT).show()
+                    navController.popBackStack()
+                    mediaPlayerCheckIn.start()
+
+                }
         )
         Image(
             painter = painterResource(id = R.drawable.kfh), // Replace with your logo resource
             contentDescription = "Kuwait Finance House Logo",
-            modifier = Modifier.size(250.dp).clickable { viewModel.checkOut() }
+            modifier = Modifier
+                .size(250.dp)
+                .clickable(interactionSource = remember { MutableInteractionSource() },
+                    indication = null) {
+                    viewModel.checkOut()
+                    Toast.makeText(context, "Good Job! you have checked out", Toast.LENGTH_SHORT).show()
+                    mediaPlayerCheckIn.start()
+                    navController.popBackStack()
+                }
         )
     }
 }
